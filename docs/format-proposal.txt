@@ -1,0 +1,70 @@
+Do I want to have an object identity matcher?
+
+Currently got 2 ideas for ways it could work.  Figure out which is best...
+
+4 SHOULD_BE == 5
+4 << ShouldGen(...) << BeProxy() == 5   // BeProxy is WIP name
+
+4 SHOULD Be(5)[.Approx(factor), .CaseInsensitive]
+4 << ShouldGen(...) << Be(5)
+
+range SHOULD_CONTAIN x
+range << ShouldGen(...) << Contain() << x
+
+// Contain could be typedef'd under Include as well?
+range SHOULD Contain(x)
+range << ShouldGen(...) << Contain(x)
+
+// Thinking that contain should take a range as well as individual items?
+range SHOULD_NOT Contain(x)
+range << ShouldGen(...,false) << Contain(x)
+
+item SHOULD BeIn(range)
+range << ShouldGen(...) << BeIn(range)
+
+// If possible BeEmpty could be some sort of const type
+// that doesn't require parenthesis?
+range SHOULD BeEmpty
+
+x SHOULD BeTrue
+x SHOULD BeFalse
+x SHOULD BeNull
+x SHOULD BeNullPtr  // C++11 nullptr, not NULL
+
+// This name could probably be better...
+x SHOULD BeRelatedTo<type>()
+
+// Some more synonyms/possible names (might want to have match vs. search)
+// Also might want to allow passing in a string, but also an actual regexp object
+text SHOULD BeLike(regexp)
+text SHOULD Match()
+
+// would be good to have these accept a tuple/argument list with func & args also
+callable SHOULD Throw<type>(optional verification callback)
+
+callable SHOULD Change(x)[.By, .ByAtMost, .ByAtLeast, .From, .To]
+
+range SHOULD StartWith(range)
+range SHOULD EndWith(range)
+
+// Would be good if I could figure out a way to get Have to act on a property
+// of the class. Doubt it'd happen though....
+range SHOULD Have(5)[.Items, .Elements, .Others]
+range SHOULD HaveAtLeast(...)
+range SHOULD HaveAtMost(...)
+
+// If these next 2 could somehow accept individual arguments & ranges, that'd be great
+range SHOULD IncludeAll(...)
+range SHOULD IncludeAny(...)
+
+range SHOULD IncludeKeys(...)
+range SHOULD IncludeValues(...)
+
+// TODO: Expect(x).To( matcher() ) syntax...
+// TODO: Expect(x).ToNot( matcher() ) syntax...
+//       Expect(x).ToBe == xxx
+
+// TODO: Would be good to find a way to specify error text as well.
+// TODO: Also, chaining these things together could be incredibly cool
+//       Thinking that would at least need some bracketing of things
+//       to override the (relatively) low precedence of logical operators
