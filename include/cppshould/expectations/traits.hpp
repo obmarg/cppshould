@@ -5,6 +5,8 @@
 #ifndef CPPSHOULD_EXPECTATIONS_TRAITS_H
 #define CPPSHOULD_EXPECTATIONS_TRAITS_H
 
+#include <stdexcept>
+
 namespace cppshould {
 namespace expectations {
 
@@ -20,6 +22,9 @@ struct ExpectationTraits
         
         // TODO: Re-implement this static assert.  At them moment it always fails
         //static_assert( false, "Expectation is not compatible with input type" );
+
+        // This isn't the best error message...
+        throw std::logic_error( "Undefined expectation traits" );
     }
 };
 

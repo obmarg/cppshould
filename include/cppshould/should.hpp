@@ -6,6 +6,7 @@
 #define CPPSHOULD_SHOULD_H_
 
 #include "shouldinfo.hpp"
+#include <stdexcept>
 
 namespace cppshould {
 
@@ -17,10 +18,10 @@ class Should
 {
 public:
     Should( 
-            const ActualT& comp, 
+            const ActualT& actual, 
             ShouldInfo shouldInfo 
             ):
-    m_comp( comp ),
+    m_actual( actual ),
     m_shouldInfo( shouldInfo )
     {}
 
@@ -30,16 +31,47 @@ public:
     void operator<<( MatcherT matcher );
     
 private:
-    const ActualT& m_comp;
+    const ActualT& m_actual;
     ShouldInfo m_shouldInfo;
 };
 
+// TODO: Should be possible to get this operator to return booleans
+//       Therefore providing the option of just getting a bool
+//       rather than throwing exceptions.
+//
+//       Look into it eventually
 template< class ActualT >
-template< class MatcherT >
-void Should< ActualT >::template operator<<( MatcherT matcher )
+template< class ExpectationT >
+void Should< ActualT >::template operator<<( ExpectationT expectation )
 {
-    // TODO: For now, do nothing.  At some point call through to matcher traits 
-    //       though
+    using expectations::ExpectationTraits;
+
+    bool matches = ExpectationTraits< ActualT, ExpectationT >::Matches(
+            m_actual,
+            expectation
+            );
+    if ( matches && m_shouldInfo.shouldNot )
+    {
+        // FAILURE 
+        //
+        // For now, lets just throw an exception.
+        // In the future this should probably call into some
+        // generic(ish) code.
+        throw std::runtime_error( "FAIL" );
+    }
+    else if ( !matches && !m_shouldInfo.shouldNot )
+    {
+        // FAILURE 
+        //
+        // For now, lets just throw an exception.
+        // In the future this should probably call into some
+        // generic(ish) code.
+        throw std::runtime_error( "FAIL" );
+    }
+    else
+    {
+        // SUCCESS (Could probably handle this as well)
+    }
 }
 
 }   // namespace cppshould

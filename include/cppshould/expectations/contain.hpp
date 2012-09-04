@@ -24,7 +24,6 @@ public:
     m_expect( expect )
     {}
 
-private:
     ExpectedT m_expect;
 };
 
@@ -48,13 +47,17 @@ impl::ContainExpectation< ExpectedT > Contain( ExpectedT expect )
 template< class ActualT, class ExpectedT >
 struct ExpectationTraits< ActualT, impl::ContainExpectation< ExpectedT > >
 {
-    bool Check( ActualT actual, ExpectedT expected )
+    // Does actual match our expectations?
+    static bool Matches(
+            ActualT actual, 
+            impl::ContainExpectation< ExpectedT > expectation
+            )
     {
         // TODO: Make this better
-        for ( auto& it = std::begin(actual); it != std::end(actual); ++it )
+        for ( auto it = std::begin(actual); it != std::end(actual); ++it )
         {
             // TODO: Probably want to use traits for comparison rather than ==
-            if ( *it == expected )
+            if ( *it == expectation.m_expect )
             {
                 return true;
             }
