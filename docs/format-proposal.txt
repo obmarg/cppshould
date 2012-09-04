@@ -2,36 +2,55 @@ Do I want to have an object identity matcher?
 
 Currently got 2 ideas for ways it could work.  Figure out which is best...
 
+Base called Expectation
+There should be static (but optional) std::func variables for success handler & 
+fail handling that are called if present.  Not sure where to put them...
+Thinking that most of the actual assertion will be done in operator>> or operator<<
+so somewhere accesible from there certainly.
+Will also need to be accesible from BeProxy
+
+Most of the Contain(x) things will need to be factory functions rather than
+actual classes to allow them to accept multiple types...  Think the naming
+scheme should be ContainMatcher as the type and Contain() as the factory
+function.  Ideally the factory function should probably do some screening of
+the types passed in, using static_assert.
+
 4 SHOULD_BE == 5
-4 << ShouldGen(...) << BeProxy() == 5   // BeProxy is WIP name
+4 << BeProxy(ShouldInfo(...)) == 5   // BeProxy is WIP name
 
 4 SHOULD Be(5)[.Approx(factor), .CaseInsensitive]
-4 << ShouldGen(...) << Be(5)
+4 << ShouldInfo(...) << Be(5)
 
+// Thinking this syntax is a no-go - too much work probably
 range SHOULD_CONTAIN x
-range << ShouldGen(...) << Contain() << x
+range << ShouldInfo(...) << Contain() << x
 
 // Contain could be typedef'd under Include as well?
 range SHOULD Contain(x)
-range << ShouldGen(...) << Contain(x)
+range << ShouldInfo(...) << Contain(x)
 
 // Thinking that contain should take a range as well as individual items?
 range SHOULD_NOT Contain(x)
-range << ShouldGen(...,false) << Contain(x)
+range << ShouldInfo(...,false) << Contain(x)
 
 item SHOULD BeIn(range)
-range << ShouldGen(...) << BeIn(range)
+range << ShouldInfo(...) << BeIn(range)
 
 // If possible BeEmpty could be some sort of const type
 // that doesn't require parenthesis?
+// This is effectively syntactic sugar
 range SHOULD BeEmpty
 
+// These are all effectively syntactic sugar
 x SHOULD BeTrue
 x SHOULD BeFalse
 x SHOULD BeNull
 x SHOULD BeNullPtr  // C++11 nullptr, not NULL
 
 // This name could probably be better...
+// Since generally we'd have factory functions, I'm thinking this should accept 
+// a variable of the type as well as the actual type itself (through some sort
+// of template magic presumably)
 x SHOULD BeRelatedTo<type>()
 
 // Some more synonyms/possible names (might want to have match vs. search)
@@ -48,7 +67,7 @@ range SHOULD StartWith(range)
 range SHOULD EndWith(range)
 
 // Would be good if I could figure out a way to get Have to act on a property
-// of the class. Doubt it'd happen though....
+// of the class. Doubt it'll happen though....
 range SHOULD Have(5)[.Items, .Elements, .Others]
 range SHOULD HaveAtLeast(...)
 range SHOULD HaveAtMost(...)
@@ -63,6 +82,10 @@ range SHOULD IncludeValues(...)
 // TODO: Expect(x).To( matcher() ) syntax...
 // TODO: Expect(x).ToNot( matcher() ) syntax...
 //       Expect(x).ToBe == xxx
+//
+//       I'm thinking these might work alright... just need to use the same
+//       factory functions and have the To/ToNot functions accept a matcher and
+//       go through the same motions as the << or >> operators
 
 // TODO: Would be good to find a way to specify error text as well.
 // TODO: Also, chaining these things together could be incredibly cool
