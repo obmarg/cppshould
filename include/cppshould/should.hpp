@@ -50,18 +50,18 @@ void Should< ActualT >::template operator<<( ExpectationT expectation )
             m_actual,
             expectation
             );
-    if ( matches && m_shouldInfo.shouldNot )
+    if ( matches && !m_shouldInfo.should )
     {
-        // FAILURE 
+        // FAILURE (matches but shouldn't)
         //
         // For now, lets just throw an exception.
         // In the future this should probably call into some
         // generic(ish) code.
         throw std::runtime_error( "FAIL" );
     }
-    else if ( !matches && !m_shouldInfo.shouldNot )
+    else if ( !matches && m_shouldInfo.should )
     {
-        // FAILURE 
+        // FAILURE (doesn't match but should)
         //
         // For now, lets just throw an exception.
         // In the future this should probably call into some

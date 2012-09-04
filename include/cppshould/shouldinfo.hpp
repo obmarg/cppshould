@@ -17,16 +17,16 @@ struct ShouldInfo
     ShouldInfo( 
             std::string fileName, 
             int lineNum, 
-            bool shouldNot=false
+            bool should=true
             ) :
     fileName( fileName ),
     lineNum( lineNum ),
-    shouldNot( shouldNot )
+    should( should )
     {}
 
     std::string fileName;
     int lineNum;
-    bool shouldNot;
+    bool should;
 };
 
 

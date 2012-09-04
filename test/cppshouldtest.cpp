@@ -19,6 +19,15 @@ int main( int argc, char** argv )
     }
     catch( std::runtime_error& )
     {
-        std::cout << "Caught Exception";
+        std::cout << "Caught Expected Exception #1";
+    }
+    intList SHOULD_NOT Contain(10);
+    try
+    {
+        intList SHOULD_NOT Contain(1);
+    }
+    catch( std::runtime_error& )
+    {
+        std::cout << "Caught Expected Exception #2";
     }
 }
