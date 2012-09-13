@@ -1,0 +1,11 @@
+Import( 'env', 'libs', 'installdir', )
+
+sources = """
+    cppshouldtest.cpp
+    """.split()
+
+output = env.Program( 'cppshouldtest', source = sources, LIBS=libs )
+
+installoutput = env.Install( installdir, output )
+
+env.Alias( 'test', installoutput )
