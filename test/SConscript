@@ -4,6 +4,7 @@ mylibs = libs + [ 'gtest', 'pthread' ]
 
 sources = """
     cppshouldtest.cpp
+    expectations/contains.cpp
     """.split()
 
 output = env.Program( 'cppshouldtest', source = sources, LIBS=mylibs )
