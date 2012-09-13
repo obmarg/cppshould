@@ -1,10 +1,12 @@
 Import( 'env', 'libs', 'installdir', )
 
+mylibs = libs + [ 'gtest', 'pthread' ]
+
 sources = """
     cppshouldtest.cpp
     """.split()
 
-output = env.Program( 'cppshouldtest', source = sources, LIBS=libs )
+output = env.Program( 'cppshouldtest', source = sources, LIBS=mylibs )
 
 installoutput = env.Install( installdir, output )
 
