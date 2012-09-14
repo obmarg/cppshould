@@ -5,9 +5,21 @@
 
 using cppshould::expectations::Contain;
 
-std::vector< int > intList = { 1, 2, 3 };
+// Data for the contain class.
+class ContainExpectation : public ::testing::Test
+{
+public:
+    ContainExpectation()
+    {
+        intList.push_back( 1 );
+        intList.push_back( 2 );
+        intList.push_back( 3 );
+    }
 
-TEST( ContainExpectation, ShouldAcceptVariables )
+    std::vector< int > intList;
+};
+
+TEST_F( ContainExpectation, ShouldAcceptVariables )
 {
     intList SHOULD Contain(1);
     intList SHOULD_NOT Contain(10);
@@ -31,13 +43,13 @@ TEST( ContainExpectation, ShouldAcceptVariables )
     }
 }
 
-TEST( ContainExpectation, ShouldAcceptInitializerLists ) 
+TEST_F( ContainExpectation, ShouldAcceptInitializerLists ) 
 {
     // TODO: Implement me
     ASSERT_TRUE( false );
 }
 
-TEST( ContainExpectation, ShouldAcceptRanges ) 
+TEST_F( ContainExpectation, ShouldAcceptRanges ) 
 {
     // TODO: Implement me
     ASSERT_TRUE( false );

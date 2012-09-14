@@ -42,7 +42,7 @@ private:
 //       Look into it eventually
 template< class ActualT >
 template< class ExpectationT >
-void Should< ActualT >::template operator<<( ExpectationT expectation )
+void Should< ActualT >::operator<<( ExpectationT expectation )
 {
     using expectations::ExpectationTraits;
 
