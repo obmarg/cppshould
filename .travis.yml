@@ -1,0 +1,9 @@
+langauge: cpp
+compiler:
+  - clang
+  - gcc
+
+install:
+  - sudo apt-get install libgtest-dev
+
+script: scons && bin/cppshouldtest

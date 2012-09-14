@@ -1,4 +1,5 @@
 import sys
+import os
 
 platform = sys.platform
 if platform != "win32" and platform != 'darwin':
@@ -40,8 +41,15 @@ if platform == 'darwin':
     cppflags += [ "-std=c++11" ]
     cpppath += [ '/opt/local/include' ]
     libpath += [ '/opt/local/lib' ]
+    # Macos (on lion anyway) uses an ancient gcc, so let's not use it by
+    # default
     cc = 'clang'
     cxx = 'clang++'
+
+# Decide on the compiler to use
+if platform != 'win32':
+    cc = os.environ.get('CC', cc)
+    cxx = os.environ.get('CXX', cxx)
 
 if platform == 'win32':
     ccflags += [ '/nologo', '/W3', '/WX', '/FC', '/Z7', '/Zl' ]
