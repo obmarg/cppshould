@@ -48,22 +48,26 @@ void Should< ActualT >::operator<<( ExpectationT expectation )
             m_actual,
             expectation
             );
-    if ( matches && !m_shouldInfo.should )
+    if ( matches && !m_shouldInfo.positive )
     {
         // FAILURE (matches but shouldn't)
         //
         // For now, lets just throw an exception.
         // In the future this should probably call into some
         // generic(ish) code.
+        //
+        // Also need to handle non-fatal errors
         throw std::runtime_error( "FAIL" );
     }
-    else if ( !matches && m_shouldInfo.should )
+    else if ( !matches && m_shouldInfo.positive )
     {
         // FAILURE (doesn't match but should)
         //
         // For now, lets just throw an exception.
         // In the future this should probably call into some
         // generic(ish) code.
+        //
+        // Also need to handle non-fatal errors
         throw std::runtime_error( "FAIL" );
     }
     else
