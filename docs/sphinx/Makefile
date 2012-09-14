@@ -44,6 +44,7 @@ srcgen:
 	./srcgen.py ../../include/cppshould api
 
 clean:
+	-rm -rf api
 	-rm -rf $(BUILDDIR)/*
 
 html: srcgen

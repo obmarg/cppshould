@@ -44,8 +44,6 @@ template< class ActualT >
 template< class ExpectationT >
 void Should< ActualT >::operator<<( ExpectationT expectation )
 {
-    using expectations::ExpectationTraits;
-
     bool matches = ExpectationTraits< ActualT, ExpectationT >::Matches(
             m_actual,
             expectation

@@ -31,8 +31,8 @@
 #ifndef CPPSHOULD_EXPECTATIONS_CONTAIN_H_
 #define CPPSHOULD_EXPECTATIONS_CONTAIN_H_
 
-#include "traits.hpp"
-#include "base.hpp"
+#include "cppshould/expectations/base.hpp"
+#include "cppshould/traits.hpp"
 
 namespace cppshould {
 namespace expectations {
@@ -67,16 +67,18 @@ impl::ContainExpectation< ExpectedT > Contain( ExpectedT expect )
     return impl::ContainExpectation< ExpectedT >( expect );
 }
 
+}   // namespace expectations
+
 //
 // Traits specialization for expectations
 //
 template< class ActualT, class ExpectedT >
-struct ExpectationTraits< ActualT, impl::ContainExpectation< ExpectedT > >
+struct ExpectationTraits< ActualT, expectations::impl::ContainExpectation< ExpectedT > >
 {
     // Does actual match our expectations?
     static bool Matches(
             ActualT actual, 
-            impl::ContainExpectation< ExpectedT > expectation
+            expectations::impl::ContainExpectation< ExpectedT > expectation
             )
     {
         // TODO: Make this better
@@ -92,7 +94,6 @@ struct ExpectationTraits< ActualT, impl::ContainExpectation< ExpectedT > >
     }
 };
     
-}   // namespace expectations
 }   // namespace cppshould
 
 #endif  // CPPSHOULD_EXPECTATIONS_CONTAIN_H_

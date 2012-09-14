@@ -8,5 +8,6 @@ Welcome to the reference of CppShould.
 
     Macros <api/macros>
     Expectations <expectations>
+    api/traits
 
 
