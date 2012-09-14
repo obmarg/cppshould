@@ -10,9 +10,19 @@
 namespace cppshould {
 namespace expectations {
 
-//
-// Traits class for expectations
-//
+//!
+//! .. class::  template<ActualT, ExpectationT> struct EquivalenceTraits
+//!     
+//!     EquivalenceTraits is a template struct that is used to define the
+//!     how expectation checks are actually carried out.
+//!
+//!     Most users should not need to know anything about this class unless
+//!     they are creating their own custom expectation types.
+//!
+//!     .. todo:: Provide some details and examples of specializing this class
+//!
+//!     .. todo:: Define the Check function in here also
+//!
 template< class ActualT, class ExpectationT >
 struct ExpectationTraits
 {
