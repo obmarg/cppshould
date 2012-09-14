@@ -1,0 +1,28 @@
+import os
+import subprocess
+
+Import( 'env', 'libs', 'depdestdir', )
+
+gtestpath = 'gtest-1.6.0'
+if not os.path.exists(gtestpath):
+    # We need to fetch gtest (boo...)
+    print("Fetching gtest")
+    subprocess.check_call(
+            ['wget', 'http://googletest.googlecode.com/files/gtest-1.6.0.zip']
+            )
+    subprocess.check_call(
+            ['unzip', 'gtest-1.6.0.zip']
+            )
+    os.unlink('gtest-1.6.0.zip')
+
+myenv = env.Clone()
+
+myenv.Prepend(CPPPATH = gtestpath)
+
+sources = [os.path.join(gtestpath, 'src', 'gtest-all.cc')]
+
+output = myenv.StaticLibrary( 'gtest', source = sources )
+
+installoutput = myenv.Install( depdestdir, output )
+
+env.Alias( 'gtest', installoutput )

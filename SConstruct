@@ -13,6 +13,7 @@ if int(debug):
     buildtype = 'debug'
 
 installdir = Dir( 'bin' )
+depdestdir = Dir( 'build-deps' )
 
 builddir = platform + '_x86_' + buildtype
 
@@ -20,8 +21,8 @@ ccflags = []
 cppflags = [ ]
 lflags = []
 cppdefines = [ ]
-cpppath = [ "#include" ]
-libpath = []
+cpppath = [ "#include", '#deps/gtest-1.6.0/include' ]
+libpath = [ depdestdir ]
 cc = cxx = None
 
 libs = [ ]
@@ -112,6 +113,7 @@ Export(
     'env',
     'libs',
     'installdir',
+    'depdestdir',
     'platform',
     'debug'
     )
@@ -122,14 +124,13 @@ SConscript( 'SConscript', variant_dir=builddir, duplicate=0 )
 # Targets
 #
 alltargets = [
-    'libs',
-    'bin',
-    'test'
+    'bin'
     ]
 
 
 env.Alias( 'libs', libtargetdir )
 env.Alias( 'bin', installdir )
+env.Alias( 'deps', depdestdir )
 env.Alias( 'all', alltargets )
 
 Default( 'all' )
