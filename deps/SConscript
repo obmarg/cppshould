@@ -11,7 +11,7 @@ if not os.path.exists(gtestpath):
             ['wget', 'http://googletest.googlecode.com/files/gtest-1.6.0.zip']
             )
     subprocess.check_call(
-            ['tar', 'xf', 'gtest-1.6.0.zip']
+            ['unzip', 'gtest-1.6.0.zip']
             )
     os.unlink('gtest-1.6.0.zip')
 
