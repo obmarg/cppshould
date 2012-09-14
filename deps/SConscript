@@ -3,21 +3,17 @@ import subprocess
 
 Import( 'env', 'libs', 'depdestdir', )
 
-# Check for global gtest, otherwise download it
-gtestpath = '/usr/src/gtest'
+gtestpath = 'gtest-1.6.0'
 if not os.path.exists(gtestpath):
-    # Gtest is not installed globablly
-    gtestpath = 'gtest-1.6.0'
-    if not os.path.exists(gtestpath):
-        # We need to fetch gtest (boo...)
-        print("Fetching gtest")
-        subprocess.check_call(
-                ['wget', 'http://googletest.googlecode.com/files/gtest-1.6.0.zip']
-                )
-        subprocess.check_call(
-                ['tar', 'xf', 'gtest-1.6.0.zip']
-                )
-        os.unlink('gtest-1.6.0.zip')
+    # We need to fetch gtest (boo...)
+    print("Fetching gtest")
+    subprocess.check_call(
+            ['wget', 'http://googletest.googlecode.com/files/gtest-1.6.0.zip']
+            )
+    subprocess.check_call(
+            ['tar', 'xf', 'gtest-1.6.0.zip']
+            )
+    os.unlink('gtest-1.6.0.zip')
 
 myenv = env.Clone()
 
