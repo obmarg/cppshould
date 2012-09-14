@@ -21,6 +21,7 @@ import sys, os
 # -- Custom configuration -----------------------------------------------------
 
 primary_domain = 'cpp'
+highlight_language='c++'
 
 # -- General configuration -----------------------------------------------------
 
