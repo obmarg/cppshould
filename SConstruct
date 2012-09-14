@@ -19,7 +19,7 @@ builddir = platform + '_x86_' + buildtype
 ccflags = []
 cppflags = [ ]
 lflags = []
-cppdefines = [ 'BOOST_FILESYSTEM_VERSION=2' ]
+cppdefines = [ ]
 cpppath = [ "#include" ]
 libpath = []
 cc = cxx = None
@@ -34,7 +34,6 @@ if platform != 'win32':
 if platform == 'linux':
     cppdefines += [ "_LINUX", "LINUX" ]
     cppflags += [ '-fpermissive', "-std=c++0x" ]
-    libs += [ 'boost_thread' ]
 
 if platform == 'darwin':
     cppdefines += [ "_MACOS", 'MACOS' ]
