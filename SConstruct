@@ -13,6 +13,7 @@ if int(debug):
     buildtype = 'debug'
 
 installdir = Dir( 'bin' )
+depdestdir = Dir( 'build-deps' )
 
 builddir = platform + '_x86_' + buildtype
 
@@ -21,7 +22,7 @@ cppflags = [ ]
 lflags = []
 cppdefines = [ ]
 cpppath = [ "#include" ]
-libpath = []
+libpath = [ depdestdir ]
 cc = cxx = None
 
 libs = [ ]
@@ -112,6 +113,7 @@ Export(
     'env',
     'libs',
     'installdir',
+    'depdestdir',
     'platform',
     'debug'
     )

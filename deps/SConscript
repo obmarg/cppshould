@@ -1,0 +1,11 @@
+Import( 'env', 'libs', 'depdestdir', )
+
+# Currently this assumes gtest is installed system-wide in /usr/src
+# as is the case on ubuntu.  This should be fixed in the future.
+sources = [ '/usr/src/gtest/src/gtest-all.cc' ]
+
+output = env.StaticLibrary( 'gtest', source = sources )
+
+installoutput = env.Install( depdestdir, output )
+
+env.Alias( 'gtest', installoutput )
