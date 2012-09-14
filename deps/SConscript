@@ -1,11 +1,32 @@
+import os
+import subprocess
+
 Import( 'env', 'libs', 'depdestdir', )
 
-# Currently this assumes gtest is installed system-wide in /usr/src
-# as is the case on ubuntu.  This should be fixed in the future.
-sources = [ '/usr/src/gtest/src/gtest-all.cc' ]
+# Check for global gtest, otherwise download it
+gtestpath = '/usr/src/gtest'
+if not os.path.exists(gtestpath):
+    # Gtest is not installed globablly
+    gtestpath = 'gtest-1.6.0'
+    if not os.path.exists(gtestpath):
+        # We need to fetch gtest (boo...)
+        print("Fetching gtest")
+        subprocess.check_call(
+                ['wget', 'http://googletest.googlecode.com/files/gtest-1.6.0.zip']
+                )
+        subprocess.check_call(
+                ['tar', 'xf', 'gtest-1.6.0.zip']
+                )
+        os.unlink('gtest-1.6.0.zip')
 
-output = env.StaticLibrary( 'gtest', source = sources )
+myenv = env.Clone()
 
-installoutput = env.Install( depdestdir, output )
+myenv.Prepend(CPPPATH = gtestpath)
+
+sources = [os.path.join(gtestpath, 'src', 'gtest-all.cc')]
+
+output = myenv.StaticLibrary( 'gtest', source = sources )
+
+installoutput = myenv.Install( depdestdir, output )
 
 env.Alias( 'gtest', installoutput )

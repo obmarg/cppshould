@@ -21,7 +21,7 @@ ccflags = []
 cppflags = [ ]
 lflags = []
 cppdefines = [ ]
-cpppath = [ "#include" ]
+cpppath = [ "#include", '#deps/gtest-1.6.0/include' ]
 libpath = [ depdestdir ]
 cc = cxx = None
 
@@ -124,14 +124,13 @@ SConscript( 'SConscript', variant_dir=builddir, duplicate=0 )
 # Targets
 #
 alltargets = [
-    'libs',
-    'bin',
-    'test'
+    'bin'
     ]
 
 
 env.Alias( 'libs', libtargetdir )
 env.Alias( 'bin', installdir )
+env.Alias( 'deps', depdestdir )
 env.Alias( 'all', alltargets )
 
 Default( 'all' )
