@@ -44,6 +44,11 @@ if platform == 'darwin':
     # default
     cc = 'clang'
     cxx = 'clang++'
+    # Also want to use clang stdlib, as gcc 4.2 version isn't great
+    cppflags.append( '-stdlib=libc++' )
+    lflags.append( '-stdlib=libc++' )
+    # libc++ doesn't have TR1
+    cppdefines.append( 'GTEST_HAS_TR1_TUPLE=0' )
 
 # Decide on the compiler to use
 if platform != 'win32':
