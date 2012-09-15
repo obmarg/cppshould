@@ -5,6 +5,7 @@
 #ifndef CPPSHOULD_SHOULD_H_
 #define CPPSHOULD_SHOULD_H_
 
+#include "cppshould/expectations/base.hpp"
 #include "cppshould/traits.hpp"
 #include "cppshould/shouldinfo.hpp"
 #include <stdexcept>
@@ -39,10 +40,13 @@ public:
     m_shouldInfo( shouldInfo )
     {}
 
-    // Maybe this should be global?  Ideally don't want to pollute the global 
-    // namespace though
-    template< class MatcherT >
-    void operator<<( MatcherT matcher );
+    template< class ExpectationT >
+    void operator<<( ExpectationT expectation );
+
+private:
+    std::string GetErrorMessage( 
+            const expectations::BaseExpectation& expectation
+            );
     
 private:
     const ActualT& m_actual;
@@ -58,7 +62,6 @@ template< class ActualT >
 template< class ExpectationT >
 void Should< ActualT >::operator<<( ExpectationT expectation )
 {
-    // TODO: Get error string from somewhere (either expectation or traits)
     bool matches = ExpectationTraits< ActualT, ExpectationT >::Matches(
             m_actual,
             expectation
@@ -68,8 +71,9 @@ void Should< ActualT >::operator<<( ExpectationT expectation )
         // FAILURE (matches but shouldn't)
         if ( ms_failCallback )
         {
-            // TODO: Fill this in with error string
-            ms_failCallback( "FAIL", m_shouldInfo.fatal );
+            ms_failCallback(
+                    GetErrorMessage( expectation ), m_shouldInfo.fatal
+                    );
         }
     }
     else if ( !matches && m_shouldInfo.positive )
@@ -77,8 +81,9 @@ void Should< ActualT >::operator<<( ExpectationT expectation )
         // FAILURE (doesn't match but should)
         if ( ms_failCallback )
         {
-            // TODO: Fill this in with error string
-            ms_failCallback( "FAIL", m_shouldInfo.fatal );
+            ms_failCallback( 
+                    GetErrorMessage( expectation ), m_shouldInfo.fatal
+                    );
         }
     }
     else
@@ -88,6 +93,26 @@ void Should< ActualT >::operator<<( ExpectationT expectation )
         {
             ms_passCallback();
         }
+    }
+}
+
+//
+// Handles getting error messages for failures
+//
+template< class ActualT >
+std::string Should< ActualT >::GetErrorMessage( 
+        const expectations::BaseExpectation& expectation 
+        )
+{
+    // For now, lets just return the error message
+    // with no placeholder processing
+    if ( m_shouldInfo.positive )
+    {
+        return expectation.MessageIfExpected();
+    }
+    else
+    {
+        return expectation.MessageIfUnexpected();
     }
 }
 

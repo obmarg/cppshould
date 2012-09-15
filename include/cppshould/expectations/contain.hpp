@@ -16,6 +16,8 @@
 //!         intList SHOULD_NOT Contain(4);  // Will pass
 //!         intList SHOULD_NOT Contain(1);  // Will fail
 //!
+//!     .. todo:: Remove this next bit (or implement range support...)
+//!
 //!     Contain should also work with initializer lists, or other range-like containers::
 //!
 //!         std::vector<int> intList = { 1, 2, 3 }
@@ -51,7 +53,30 @@ public:
     {}
 
     ExpectedT m_expect;
+
+    virtual std::string MessageIfExpected() const;
+    virtual std::string MessageIfUnexpected() const;
 };
+
+//
+// MessageIfExpected 
+//      Returns the message if expectation was not met 
+//
+template< class ExpectedT >
+std::string ContainExpectation< ExpectedT >::MessageIfExpected() const
+{
+    return "FAIL";
+}
+
+//
+// MessageIfUnexpected 
+//      Returns the message if expectation was met but shouldn't have been
+//
+template< class ExpectedT >
+std::string ContainExpectation< ExpectedT >::MessageIfUnexpected() const
+{
+    return "FAIL";
+}
 
 }   // namespace impl
 
