@@ -26,7 +26,7 @@ public:
     std::vector< int > intList;
 };
 
-TEST_F( ContainExpectation, ShouldAcceptVariables )
+TEST_F( ContainExpectation, ShouldAcceptInts )
 {
     // Set things up
     MockCallbacks callbacks;
@@ -50,7 +50,7 @@ TEST_F( ContainExpectation, ShouldAcceptVariables )
     intList SHOULD_NOT Contain(1);
 }
 
-TEST_F( ContainExpectation, ShouldAcceptStrings ) 
+TEST_F( ContainExpectation, ShouldAcceptChars ) 
 {
     // Set things up
     MockCallbacks callbacks;
