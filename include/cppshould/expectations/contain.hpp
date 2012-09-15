@@ -75,17 +75,17 @@ impl::ContainExpectation< ExpectedT > Contain( ExpectedT expect )
 template< class ActualT, class ExpectedT >
 struct ExpectationTraits< ActualT, expectations::impl::ContainExpectation< ExpectedT > >
 {
-    // Does actual match our expectations?
+    typedef EquivalenceTraits< typename ActualT::value_type, ExpectedT > EquivTraits;
+
     static bool Matches(
             ActualT actual, 
             expectations::impl::ContainExpectation< ExpectedT > expectation
             )
     {
-        // TODO: Make this better
+        // TODO: Maybe this to a foreach at some point?
         for ( auto it = std::begin(actual); it != std::end(actual); ++it )
         {
-            // TODO: Probably want to use traits for comparison rather than ==
-            if ( *it == expectation.m_expect )
+            if ( EquivTraits::Equivalent( *it, expectation.m_expect ) )
             {
                 return true;
             }
