@@ -3,30 +3,38 @@ import subprocess
 
 Import( 'env', 'libs', 'depdestdir', )
 
+
+def FetchDep(destPath, srcUrl):
+    if not os.path.exists(destPath):
+        print "Fetching {0}".format(destPath)
+        outfile = open(os.path.devnull, 'w')
+        subprocess.check_call(
+                ['wget', srcUrl],
+                stdout=outfile, stderr=outfile
+                )
+        filename = os.path.basename(srcUrl)
+        subprocess.check_call(
+                ['unzip', filename],
+                stdout=outfile
+                )
+        outfile.close()
+        os.unlink(filename)
+
 gtestpath = 'gtest-1.6.0'
-if not os.path.exists(gtestpath):
-    # We need to fetch gtest (boo...)
-    print("Fetching gtest")
-    outfile = open(os.path.devnull, 'w')
-    subprocess.check_call(
-            ['wget', 'http://googletest.googlecode.com/files/gtest-1.6.0.zip'],
-            stdout=outfile, stderr=outfile
-            )
-    subprocess.check_call(
-            ['unzip', 'gtest-1.6.0.zip'],
-            stdout=outfile
-            )
-    outfile.close()
-    os.unlink('gtest-1.6.0.zip')
+FetchDep(gtestpath, 'http://googletest.googlecode.com/files/gtest-1.6.0.zip')
+gmockpath = 'gmock-1.6.0'
+FetchDep(gmockpath, 'http://googlemock.googlecode.com/files/gmock-1.6.0.zip')
 
 myenv = env.Clone()
 
-myenv.Prepend(CPPPATH = gtestpath)
-
+myenv.Prepend(CPPPATH=gtestpath)
 sources = [os.path.join(gtestpath, 'src', 'gtest-all.cc')]
+gtestoutput = myenv.StaticLibrary('gtest', source=sources)
+gtestinstall = myenv.Install(depdestdir, gtestoutput)
+env.Alias('gtest', gtestinstall)
 
-output = myenv.StaticLibrary( 'gtest', source = sources )
-
-installoutput = myenv.Install( depdestdir, output )
-
-env.Alias( 'gtest', installoutput )
+myenv.Prepend(CPPPATH=gmockpath)
+sources = [os.path.join(gmockpath, 'src', 'gmock-all.cc')]
+gmockoutput = myenv.StaticLibrary('gmock', source=sources)
+gmockinstall = myenv.Install(depdestdir, gmockoutput)
+env.Alias('gmock', gmockinstall)

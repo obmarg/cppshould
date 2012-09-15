@@ -27,6 +27,7 @@ docs/sphinx/api
 
 # Dependency source files
 deps/gtest-*/
+deps/gmock-*/
 
 # ropeproject dirs used for python scripts
 .ropeproject/
