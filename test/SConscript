@@ -1,6 +1,6 @@
 Import( 'env', 'libs', 'installdir', )
 
-mylibs = libs + [ 'gtest', 'gmock' ]
+mylibs = libs + [ 'gtest', 'gmock', 'pthread' ]
 
 myenv = env.Clone()
 

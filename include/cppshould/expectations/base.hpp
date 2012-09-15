@@ -12,6 +12,7 @@
 
 #include <string>
 #include <sstream>
+#include <stdexcept>
 
 namespace cppshould {
 namespace expectations {
