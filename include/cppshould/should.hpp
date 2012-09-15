@@ -5,16 +5,30 @@
 #ifndef CPPSHOULD_SHOULD_H_
 #define CPPSHOULD_SHOULD_H_
 
-#include "shouldinfo.hpp"
+#include "cppshould/traits.hpp"
+#include "cppshould/shouldinfo.hpp"
 #include <stdexcept>
+#include <functional>
 
 namespace cppshould {
+
+typedef std::function< void (std::string, bool) > FailCallback;
+typedef std::function< void () > PassCallback;
+
+class ShouldBase
+{
+    friend class Callbacks;
+
+protected:
+    static FailCallback ms_failCallback;
+    static PassCallback ms_passCallback;
+};
 
 //
 // Class that holds the actual data and manages the comparison
 //
 template< class ActualT >
-class Should
+class Should : public ShouldBase
 {
 public:
     Should( 
@@ -44,6 +58,7 @@ template< class ActualT >
 template< class ExpectationT >
 void Should< ActualT >::operator<<( ExpectationT expectation )
 {
+    // TODO: Get error string from somewhere (either expectation or traits)
     bool matches = ExpectationTraits< ActualT, ExpectationT >::Matches(
             m_actual,
             expectation
@@ -51,28 +66,28 @@ void Should< ActualT >::operator<<( ExpectationT expectation )
     if ( matches && !m_shouldInfo.positive )
     {
         // FAILURE (matches but shouldn't)
-        //
-        // For now, lets just throw an exception.
-        // In the future this should probably call into some
-        // generic(ish) code.
-        //
-        // Also need to handle non-fatal errors
-        throw std::runtime_error( "FAIL" );
+        if ( ms_failCallback )
+        {
+            // TODO: Fill this in with error string
+            ms_failCallback( "FAIL", m_shouldInfo.fatal );
+        }
     }
     else if ( !matches && m_shouldInfo.positive )
     {
         // FAILURE (doesn't match but should)
-        //
-        // For now, lets just throw an exception.
-        // In the future this should probably call into some
-        // generic(ish) code.
-        //
-        // Also need to handle non-fatal errors
-        throw std::runtime_error( "FAIL" );
+        if ( ms_failCallback )
+        {
+            // TODO: Fill this in with error string
+            ms_failCallback( "FAIL", m_shouldInfo.fatal );
+        }
     }
     else
     {
         // SUCCESS (Could probably handle this as well)
+        if ( ms_passCallback )
+        {
+            ms_passCallback();
+        }
     }
 }
 
