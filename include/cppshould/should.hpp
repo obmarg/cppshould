@@ -110,15 +110,10 @@ std::string Should< ActualT >::GetErrorMessage(
     // For now, lets just prepend actual to the error
     // message, and hope it works.
     // Also we'll ignore fatal vs non-fatal errors for now
-    std::string actualString = ToStringTraits< ActualT >::Convert( m_actual );
-    if ( m_shouldInfo.positive )
-    {
-        return actualString + expectation.MessageIfExpected();
-    }
-    else
-    {
-        return actualString + expectation.MessageIfUnexpected();
-    }
+    std::ostringstream oss;
+    oss << ToStringTraits< ActualT >::Convert( m_actual ) << " "
+        << expectation.ErrorMessage( m_shouldInfo.positive, m_shouldInfo.fatal );
+    return oss.str();
 }
 
 }   // namespace cppshould

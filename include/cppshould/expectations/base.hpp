@@ -11,6 +11,7 @@
 #define CPPSHOULD_EXPECTATIONS_BASE_H_
 
 #include <string>
+#include <sstream>
 
 namespace cppshould {
 namespace expectations {
@@ -28,29 +29,68 @@ namespace expectations {
 //!
 //!     .. todo:: Either detail placeholders here or link to details
 //!
-//!     .. function:: std::string MessageIfExpected()
+//!     .. function:: std::string ErrorMessage( bool expected, bool fatal )
 //!         
-//!         This function will be called in the case that an expectation
-//!         was not met but was expected to be met.
+//!         This function will be called in the case of an expectation 
+//!         failure.
+//!
+//!         The default implementation of this function will defer to 
+//!         the func:`ToString` to get the expected text and will prepend
+//!         should/must (not) on the front.
+//!
+//!         ``expected`` defines whether it was a SHOULD failure or a 
+//!         SHOULD_NOT failure (true means SHOULD, false means SHOULD_NOT)
+//!
+//!         ``fatal`` defines whether it was a SHOULD or MUST failure
 //!
 //!         It should return a string containing a placeholder for the
-//!         actual value used in checking the expectation.
+//!         actual value used in checking the expectation. Currently this
+//!         placeholder isn't defined, and the actual value will just
+//!         be prepended.
 //!
-//!     .. function:: std::string MessageIfUnexpected()
-//!         
-//!         This function will be called in the case that an expectation
-//!         was met but was not expected to be met.
+//!     .. function:: std::string ToString()
 //!
-//!         It should return a string containing a placeholder for the
-//!         actual value used in checking the expectation.
+//!         This function should be defined by any child classes that
+//!         don't intend to provide their own implementation of 
+//!         func:`ErrorMessage`.
+//!
+//!         It should return a string representation of the expectation
+//!         which will be appended on the end of a failure description
+//!         sentence.
 //!
 class BaseExpectation
 {
 public:
     virtual ~BaseExpectation() {};
 
-    virtual std::string MessageIfExpected() const=0;
-    virtual std::string MessageIfUnexpected() const=0;
+    virtual std::string ErrorMessage( bool expected, bool fatal ) const
+    {
+        std::ostringstream oss;
+        if ( fatal )
+        {
+            oss << "must ";
+        }
+        else
+        {
+            oss << "should ";
+        }
+        if( !expected )
+        {
+            oss << "not ";
+        }
+        oss << ToString();
+        return oss.str();
+    }
+
+protected:
+    virtual std::string ToString() const
+    {
+        throw std::logic_error( 
+                "ToString was called on an expectation that has not provided " 
+                "an implementation"
+                );
+    }
+
 };
 
 //!

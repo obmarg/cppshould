@@ -20,14 +20,9 @@ public:
     succeed( succeed )
     {}
 
-    std::string MessageIfExpected() const
+    std::string ToString() const
     {
-        return " SHOULD-FAIL";
-    }
-
-    std::string MessageIfUnexpected() const
-    {
-        return " SHOULD_NOT-FAIL";
+        return "FakeExpectation";
     }
 
     bool succeed;
@@ -73,9 +68,9 @@ TEST( Should, ShouldCallFailCallbackOnFatal )
     // Set expectations
     {
         InSequence dummy;
-        EXPECT_CALL(callbacks, Fail("1 SHOULD-FAIL", true) )
+        EXPECT_CALL(callbacks, Fail("1 must FakeExpectation", true) )
             .Times(3);
-        EXPECT_CALL(callbacks, Fail("1 SHOULD_NOT-FAIL", true) )
+        EXPECT_CALL(callbacks, Fail("1 must not FakeExpectation", true) )
             .Times(2);
     }
 
@@ -95,9 +90,9 @@ TEST( Should, ShouldCallFailCallbackOnNonFatal )
     // Set expectations
     {
         InSequence dummy;
-        EXPECT_CALL(callbacks, Fail("1 SHOULD-FAIL", false) )
+        EXPECT_CALL(callbacks, Fail("1 should FakeExpectation", false) )
             .Times(3);
-        EXPECT_CALL(callbacks, Fail("1 SHOULD_NOT-FAIL", false) )
+        EXPECT_CALL(callbacks, Fail("1 should not FakeExpectation", false) )
             .Times(2);
     }
 

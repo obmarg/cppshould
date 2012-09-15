@@ -54,30 +54,17 @@ public:
 
     ExpectedT m_expect;
 
-    virtual std::string MessageIfExpected() const;
-    virtual std::string MessageIfUnexpected() const;
+protected:
+    virtual std::string ToString() const;
 };
 
 //
-// MessageIfExpected 
-//      Returns the message if expectation was not met 
+// Returns the expectation expressed as a string
 //
 template< class ExpectedT >
-std::string ContainExpectation< ExpectedT >::MessageIfExpected() const
+std::string ContainExpectation< ExpectedT >::ToString() const
 {
-    return " should contain " + 
-        ToStringTraits< ExpectedT >::Convert( m_expect );
-}
-
-//
-// MessageIfUnexpected 
-//      Returns the message if expectation was met but shouldn't have been
-//
-template< class ExpectedT >
-std::string ContainExpectation< ExpectedT >::MessageIfUnexpected() const
-{
-    return " should not contain " + 
-        ToStringTraits< ExpectedT >::Convert( m_expect );
+    return "contain " + ToStringTraits< ExpectedT >::Convert( m_expect );
 }
 
 }   // namespace impl
