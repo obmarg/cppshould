@@ -1,16 +1,3 @@
-#include <sstream>
-#include <vector>
-
-//
-// Temporary operator<< for vector till I figure something better.
-// Has to go up here in order to work with things (grr...)
-//
-static std::ostream& operator<<( std::ostream& os, std::vector< int > vec )
-{
-    os << "IntVector";
-    return os;
-}
-
 #include "cppshould/expectations/contain.hpp"
 #include "cppshould/operators.hpp"
 #include "cppshould/macros.hpp"

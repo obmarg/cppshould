@@ -18,6 +18,7 @@
 #define CPPSHOULD_TRAITS_H_
 
 #include <stdexcept>
+#include <sstream>
 
 namespace cppshould {
 
@@ -79,6 +80,42 @@ struct ExpectationTraits
     static bool Check( ActualT actual, ExpectationT expectation );
 };
 
+//!
+//! .. class::  ToStringTraits
+//!
+//!     ToStringTraits is a template struct that is used to convert objects
+//!     into a string before output.
+//!
+//!     By default it makes use the ostringstream ``operator<<`` and most 
+//!     users should be able to just override that operator to perform 
+//!     the conversions they want.
+//!
+//!     However in some cases the compiler might not be able to locate
+//!     the correct operator<< (for example if providing it for a stdlib
+//!     container and not defining it before this file is included) in
+//!     which case providing a specialization of this class would be the
+//!     best option.
+//!
+//!     .. todo:: Provide some examples
+//!
+//!     .. function:: static std::string Convert( TypeT input )
+//!
+//!         This function converts the input data into a string and returns it
+//!
+template< class TypeT >
+struct ToStringTraits
+{
+    static std::string Convert( const TypeT& input )
+    {
+        std::ostringstream oss;
+        oss << input;
+        return oss.str();
+    }
+};
+
 }   // namespace cppshould
+
+// Include some specializations of ToStringTraits
+#include "cppshould/tostring.h"
 
 #endif  // CPPSHOULD_TRAITS_H_
