@@ -25,14 +25,10 @@ TEST_F( ContainExpectation, ShouldAcceptVariables )
     intList SHOULD_NOT Contain(10);
     
     // TODO: Replace these with assert_throws or whatever
-    try
-    {
-        intList SHOULD Contain(10);
-        ASSERT_TRUE( false );
-    }
-    catch( std::runtime_error& )
-    {
-    }
+    EXPECT_THROW(
+            ( intList SHOULD Contain(10) ), 
+            std::runtime_error
+            );
     try
     {
         intList SHOULD_NOT Contain(1);
@@ -43,14 +39,10 @@ TEST_F( ContainExpectation, ShouldAcceptVariables )
     }
 }
 
-TEST_F( ContainExpectation, ShouldAcceptInitializerLists ) 
+TEST_F( ContainExpectation, ShouldAcceptStrings ) 
 {
-    // TODO: Implement me
-    ASSERT_TRUE( false );
-}
+    std::string str = "Hello There!";
 
-TEST_F( ContainExpectation, ShouldAcceptRanges ) 
-{
-    // TODO: Implement me
-    ASSERT_TRUE( false );
+    str SHOULD Contain('H');
+    str SHOULD_NOT Contain('h');
 }

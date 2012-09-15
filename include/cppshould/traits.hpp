@@ -62,7 +62,7 @@ struct EquivalenceTraits
 //!
 //!     .. todo:: Define the Check function in here also
 //!
-template< class ActualT, class ExpectationT >
+template< class ActualT, class ExpectationT, class Enable=void >
 struct ExpectationTraits
 {
     bool Check( ActualT input, typename ExpectationT::ExpectedT actual )

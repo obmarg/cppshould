@@ -70,10 +70,13 @@ impl::ContainExpectation< ExpectedT > Contain( ExpectedT expect )
 }   // namespace expectations
 
 //
-// Traits specialization for expectations
+// Traits specialization for contains
 //
 template< class ActualT, class ExpectedT >
-struct ExpectationTraits< ActualT, expectations::impl::ContainExpectation< ExpectedT > >
+struct ExpectationTraits< 
+    ActualT, 
+    expectations::impl::ContainExpectation< ExpectedT >
+    >
 {
     typedef EquivalenceTraits< typename ActualT::value_type, ExpectedT > EquivTraits;
 
@@ -83,6 +86,7 @@ struct ExpectationTraits< ActualT, expectations::impl::ContainExpectation< Expec
             )
     {
         // TODO: Maybe this to a foreach at some point?
+        //       Or just a std::find_if 
         for ( auto it = std::begin(actual); it != std::end(actual); ++it )
         {
             if ( EquivTraits::Equivalent( *it, expectation.m_expect ) )

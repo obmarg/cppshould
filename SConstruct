@@ -84,12 +84,6 @@ else:
 
 cppdirs = [ ]
 
-libtargetdir = Dir( "lib/" + builddir )
-
-libpath += [
-    libtargetdir
-    ]
-
 env = Environment()
 
 
@@ -128,7 +122,6 @@ alltargets = [
     ]
 
 
-env.Alias( 'libs', libtargetdir )
 env.Alias( 'bin', installdir )
 env.Alias( 'deps', depdestdir )
 env.Alias( 'all', alltargets )
