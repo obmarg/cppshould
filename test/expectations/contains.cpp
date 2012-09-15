@@ -24,19 +24,14 @@ TEST_F( ContainExpectation, ShouldAcceptVariables )
     intList SHOULD Contain(1);
     intList SHOULD_NOT Contain(10);
     
-    // TODO: Replace these with assert_throws or whatever
     EXPECT_THROW(
             ( intList SHOULD Contain(10) ), 
             std::runtime_error
             );
-    try
-    {
-        intList SHOULD_NOT Contain(1);
-        ASSERT_TRUE( false );
-    }
-    catch( std::runtime_error& )
-    {
-    }
+    EXPECT_THROW(
+            ( intList SHOULD_NOT Contain(1) ),
+            std::runtime_error
+            );
 }
 
 TEST_F( ContainExpectation, ShouldAcceptStrings ) 
@@ -44,5 +39,10 @@ TEST_F( ContainExpectation, ShouldAcceptStrings )
     std::string str = "Hello There!";
 
     str SHOULD Contain('H');
-    str SHOULD_NOT Contain('h');
+    str SHOULD_NOT Contain('b');
+
+    EXPECT_THROW(
+            ( str SHOULD_NOT Contain('h') ),
+            std::runtime_error
+            );
 }
