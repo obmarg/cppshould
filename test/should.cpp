@@ -1,9 +1,10 @@
-
 #include "cppshould/expectations/contain.hpp"
 #include "cppshould/operators.hpp"
 #include "cppshould/macros.hpp"
 #include "mocks/callbacks.hpp"
 #include <gtest/gtest.h>
+
+using ::testing::InSequence;
 
 using cppshould::expectations::Contain;
 using cppshould::testing::MockCallbacks;
@@ -12,11 +13,22 @@ using cppshould::testing::SetupCallbacks;
 //
 // A fake expectation class for use by these tests
 //
-struct FakeExpectation : cppshould::expectations::Expectation< bool >
+class FakeExpectation : public cppshould::expectations::Expectation< bool >
 {
+public:
     FakeExpectation( bool succeed ) :
     succeed( succeed )
     {}
+
+    std::string MessageIfExpected() const
+    {
+        return " SHOULD-FAIL";
+    }
+
+    std::string MessageIfUnexpected() const
+    {
+        return " SHOULD_NOT-FAIL";
+    }
 
     bool succeed;
 };
@@ -36,11 +48,6 @@ struct ExpectationTraits< int, FakeExpectation >
 
 TEST( Should, ShouldCallPassCallback )
 {
-    // Create test data
-    std::vector< int > intList;
-    intList.push_back( 1 );
-    intList.push_back( 2 );
-
     // Create & setup mock
     MockCallbacks callbacks;
     SetupCallbacks( callbacks );
@@ -50,53 +57,55 @@ TEST( Should, ShouldCallPassCallback )
         .Times(5);
 
     // Trigger successes
-    intList SHOULD Contain(1);
-    intList SHOULD Contain(2);
-    intList SHOULD_NOT Contain(100);
-    intList SHOULD_NOT Contain(-1);
-    intList SHOULD_NOT Contain(1024);
+    1 SHOULD FakeExpectation(true);
+    2 SHOULD FakeExpectation(true);
+    3 SHOULD_NOT FakeExpectation(false);
+    4 SHOULD_NOT FakeExpectation(false);
+    5 SHOULD_NOT FakeExpectation(false);
 }
 
 TEST( Should, ShouldCallFailCallbackOnFatal )
 {
-    // Create test data
-    std::vector< int > intList;
-    intList.push_back( 1 );
-    intList.push_back( 2 );
-
     // Create & setup mock
     MockCallbacks callbacks;
     SetupCallbacks( callbacks );
 
     // Set expectations
-    EXPECT_CALL(callbacks, Fail("FAIL", true) )
-        .Times(5);
+    {
+        InSequence dummy;
+        EXPECT_CALL(callbacks, Fail("1 SHOULD-FAIL", true) )
+            .Times(3);
+        EXPECT_CALL(callbacks, Fail("1 SHOULD_NOT-FAIL", true) )
+            .Times(2);
+    }
 
-    intList MUST Contain(100);
-    intList MUST Contain(200);
-    intList MUST Contain(1024);
-    intList MUST_NOT Contain(1);
-    intList MUST_NOT Contain(2);
+    1 MUST FakeExpectation(false);
+    1 MUST FakeExpectation(false);
+    1 MUST FakeExpectation(false);
+    1 MUST_NOT FakeExpectation(true);
+    1 MUST_NOT FakeExpectation(true);
 }
 
 TEST( Should, ShouldCallFailCallbackOnNonFatal )
 {
-    // Create test data
-    std::vector< int > intList;
-    intList.push_back( 1 );
-    intList.push_back( 2 );
-
     // Create & setup mock
     MockCallbacks callbacks;
     SetupCallbacks( callbacks );
 
     // Set expectations
-    EXPECT_CALL(callbacks, Fail("FAIL", false) )
-        .Times(5);
+    {
+        InSequence dummy;
+        EXPECT_CALL(callbacks, Fail("1 SHOULD-FAIL", false) )
+            .Times(3);
+        EXPECT_CALL(callbacks, Fail("1 SHOULD_NOT-FAIL", false) )
+            .Times(2);
+    }
 
-    intList SHOULD Contain(100);
-    intList SHOULD Contain(200);
-    intList SHOULD Contain(1024);
-    intList SHOULD_NOT Contain(1);
-    intList SHOULD_NOT Contain(2);
+    int x = 1;
+
+    x SHOULD FakeExpectation(false);
+    x SHOULD FakeExpectation(false);
+    x SHOULD FakeExpectation(false);
+    x SHOULD_NOT FakeExpectation(true);
+    x SHOULD_NOT FakeExpectation(true);
 }

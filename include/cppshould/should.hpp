@@ -10,6 +10,7 @@
 #include "cppshould/shouldinfo.hpp"
 #include <stdexcept>
 #include <functional>
+#include <sstream>
 
 namespace cppshould {
 
@@ -33,12 +34,14 @@ class Should : public ShouldBase
 {
 public:
     Should( 
-            const ActualT& actual, 
+            ActualT actual, 
             ShouldInfo shouldInfo 
             ):
     m_actual( actual ),
     m_shouldInfo( shouldInfo )
-    {}
+    {
+        ActualT a = actual;
+    }
 
     template< class ExpectationT >
     void operator<<( ExpectationT expectation );
@@ -49,11 +52,11 @@ private:
             );
     
 private:
-    const ActualT& m_actual;
+    ActualT m_actual;
     ShouldInfo m_shouldInfo;
 };
 
-// TODO: Should be possible to get this operator to return booleans
+// TODO: May be possible to get this operator to return booleans
 //       Therefore providing the option of just getting a bool
 //       rather than throwing exceptions.
 //
@@ -88,7 +91,7 @@ void Should< ActualT >::operator<<( ExpectationT expectation )
     }
     else
     {
-        // SUCCESS (Could probably handle this as well)
+        // SUCCESS 
         if ( ms_passCallback )
         {
             ms_passCallback();
@@ -104,16 +107,20 @@ std::string Should< ActualT >::GetErrorMessage(
         const expectations::BaseExpectation& expectation 
         )
 {
-    // For now, lets just return the error message
-    // with no placeholder processing
+    // For now, lets just prepend actual to the error
+    // message, and hope it works.
+    // Also we'll ignore fatal vs non-fatal errors for now
+    std::ostringstream oss;
+    oss << m_actual;
     if ( m_shouldInfo.positive )
     {
-        return expectation.MessageIfExpected();
+        oss << expectation.MessageIfExpected();
     }
     else
     {
-        return expectation.MessageIfUnexpected();
+        oss << expectation.MessageIfUnexpected();
     }
+    return oss.str();
 }
 
 }   // namespace cppshould

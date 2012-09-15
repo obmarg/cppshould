@@ -35,6 +35,7 @@
 
 #include "cppshould/expectations/base.hpp"
 #include "cppshould/traits.hpp"
+#include <sstream>
 
 namespace cppshould {
 namespace expectations {
@@ -65,7 +66,9 @@ public:
 template< class ExpectedT >
 std::string ContainExpectation< ExpectedT >::MessageIfExpected() const
 {
-    return "FAIL";
+    std::ostringstream oss;
+    oss << " should contain " << m_expect;
+    return oss.str();
 }
 
 //
@@ -75,7 +78,9 @@ std::string ContainExpectation< ExpectedT >::MessageIfExpected() const
 template< class ExpectedT >
 std::string ContainExpectation< ExpectedT >::MessageIfUnexpected() const
 {
-    return "FAIL";
+    std::ostringstream oss;
+    oss << " should not contain " << m_expect;
+    return oss.str();
 }
 
 }   // namespace impl

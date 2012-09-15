@@ -58,6 +58,11 @@ if platform != 'win32':
     cc = os.environ.get('CC', cc)
     cxx = os.environ.get('CXX', cxx)
 
+if cc == 'clang':
+    # Turn on colors for clang builds
+    cppflags.append('-fcolor-diagnostics')
+    lflags.append('-fcolor-diagnostics')
+
 if platform == 'win32':
     ccflags += [ '/nologo', '/W3', '/WX', '/FC', '/Z7', '/Zl' ]
     lflags += [ '/MAP', '/MANIFEST:NO', '/MACHINE:X86' ]
