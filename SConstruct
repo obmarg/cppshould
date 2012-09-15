@@ -21,7 +21,9 @@ ccflags = []
 cppflags = [ ]
 lflags = []
 cppdefines = [ ]
-cpppath = [ "#include", '#deps/gtest-1.6.0/include' ]
+cpppath = [
+    "#include", '#deps/gtest-1.6.0/include', '#deps/gmock-1.6.0/include'
+    ]
 libpath = [ depdestdir ]
 cc = cxx = None
 
@@ -49,12 +51,17 @@ if platform == 'darwin':
     cppflags.append( '-stdlib=libc++' )
     lflags.append( '-stdlib=libc++' )
     # libc++ doesn't have TR1
-    cppdefines.append( 'GTEST_HAS_TR1_TUPLE=0' )
+    cppdefines += [ 'GTEST_USE_OWN_TR1_TUPLE=1' ]
 
 # Decide on the compiler to use
 if platform != 'win32':
     cc = os.environ.get('CC', cc)
     cxx = os.environ.get('CXX', cxx)
+
+if cc == 'clang':
+    # Turn on colors for clang builds
+    cppflags.append('-fcolor-diagnostics')
+    lflags.append('-fcolor-diagnostics')
 
 if platform == 'win32':
     ccflags += [ '/nologo', '/W3', '/WX', '/FC', '/Z7', '/Zl' ]

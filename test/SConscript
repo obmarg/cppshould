@@ -1,14 +1,23 @@
 Import( 'env', 'libs', 'installdir', )
 
-mylibs = libs + [ 'gtest', 'pthread' ]
+mylibs = libs + [ 'gtest', 'gmock' ]
+
+myenv = env.Clone()
+
+myenv.Append(CPPPATH='.')
 
 sources = """
     cppshouldtest.cpp
+    should.cpp
     expectations/contains.cpp
     """.split()
 
-output = env.Program( 'cppshouldtest', source = sources, LIBS=mylibs )
+output = myenv.Program(
+    'cppshouldtest',
+    source=sources,
+    LIBS=mylibs
+    )
 
-installoutput = env.Install( installdir, output )
+installoutput = myenv.Install( installdir, output )
 
 env.Alias( 'test', installoutput )

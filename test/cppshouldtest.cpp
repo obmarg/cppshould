@@ -1,12 +1,8 @@
 
-#include "cppshould/expectations/contain.hpp"
-#include "cppshould/operators.hpp"
-#include "cppshould/macros.hpp"
+#include <cppshould/main.hpp>
 #include <gtest/gtest.h>
 #include <iostream>
 #include <vector>
-
-using namespace cppshould::expectations;
 
 int main( int argc, char** argv )
 {

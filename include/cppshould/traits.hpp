@@ -3,7 +3,7 @@
 //! ==================================
 //!
 //! CppShould contains several different traits templates to allow users to customise
-//! the behaviour of CppShould and it's expectations, or to provide entirely new 
+//! the behaviour of CppShould and it's expectations, or to provide entirely new
 //! expectations.
 //!
 //! This file details the various traits templates provided by CppShould along
@@ -18,23 +18,24 @@
 #define CPPSHOULD_TRAITS_H_
 
 #include <stdexcept>
+#include <sstream>
 
 namespace cppshould {
 
 //!
 //! .. class::  EquivalenceTraits
-//!     
-//!     EquivalenceTraits is a template struct that is used throughout CppShould
-//!     in place of the ``operator==``.  
 //!
-//!     Users should specialise this class if they wish to provide custom 
-//!     comparisons between types without having to override operator= globally 
-//!     or provide class member operators.
+//!     EquivalenceTraits is a template struct that is used throughout CppShould
+//!     in place of ``operator==``.
+//!
+//!     Users should specialise this class if they wish to provide custom
+//!     comparisons between types without having to override ``operator==``
+//!     globally or provide class member operators.
 //!
 //!     .. todo:: Provide some examples of overriding this function?
 //!
 //!     .. function:: static bool Equivalent( const LeftT& lhs, const RightT& rhs )
-//!         
+//!
 //!         This function actually performs the comparisons, and should be provided
 //!         by any specializations of EquivalenceTraits.
 //!
@@ -51,7 +52,7 @@ struct EquivalenceTraits
 
 //!
 //! .. class::  EquivalenceTraits
-//!     
+//!
 //!     EquivalenceTraits is a template struct that is used to define the
 //!     how expectation checks are actually carried out.
 //!
@@ -60,23 +61,61 @@ struct EquivalenceTraits
 //!
 //!     .. todo:: Provide some details and examples of specializing this class
 //!
-//!     .. todo:: Define the Check function in here also
+//!     .. function:: static bool Check( ActualT actual, ExpectationT expectation )
+//!
+//!         This function is used to actually check expectations.  It should
+//!         return true if ``actual`` meets ``expectation``
 //!
 template< class ActualT, class ExpectationT, class Enable=void >
 struct ExpectationTraits
 {
-    bool Check( ActualT input, typename ExpectationT::ExpectedT actual )
-    {
-        // TODO: Figure out a way of including types in this static_assert
-        
-        // TODO: Re-implement this static assert.  At them moment it always fails
-        //static_assert( false, "Expectation is not compatible with input type" );
+    // This static assert should always fail.
+    // It's only purpose is to ensure this generalised version is never
+    // used
+    static_assert(
+            std::is_same<ActualT, ExpectationT>::value,
+            "This Expectation does not support checking against this data type"
+            );
 
-        // This isn't the best error message...
-        throw std::logic_error( "Undefined expectation traits" );
+    static bool Check( ActualT actual, ExpectationT expectation );
+};
+
+//!
+//! .. class::  ToStringTraits
+//!
+//!     ToStringTraits is a template struct that is used to convert objects
+//!     into a string before output.
+//!
+//!     By default it makes use the ostringstream ``operator<<`` and most 
+//!     users should be able to just override that operator to perform 
+//!     the conversions they want.
+//!
+//!     However in some cases the compiler might not be able to locate
+//!     the correct operator<< (for example if providing it for a stdlib
+//!     container and not defining it before this file is included) in
+//!     which case providing a specialization of this class would be the
+//!     best option.
+//!
+//!     .. todo:: Provide some examples
+//!
+//!     .. function:: static std::string Convert( TypeT input )
+//!
+//!         This function converts the input data into a string and returns it
+//!
+template< class TypeT >
+struct ToStringTraits
+{
+    static std::string Convert( const TypeT& input )
+    {
+        std::ostringstream oss;
+        oss << input;
+        return oss.str();
     }
 };
 
 }   // namespace cppshould
+
+// Include some specializations of ToStringTraits
+#include "cppshould/tostring.h"
 
 #endif  // CPPSHOULD_TRAITS_H_
