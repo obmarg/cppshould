@@ -15,8 +15,8 @@ class BaseExpectation
 public:
     virtual ~BaseExpectation() {};
 
-    virtual std::string MessageIfPasses()=0;
-    virtual std::string MessageIfFails()=0;
+    virtual std::string MessageIfExpected()=0;
+    virtual std::string MessageIfUnexpected()=0;
 };
 
 //
@@ -29,5 +29,5 @@ public:
     typedef ExpectT ExpectedT;
 };
 
-};
-}; 
+}   // namespace expectations
+}   // namespace cppshould 

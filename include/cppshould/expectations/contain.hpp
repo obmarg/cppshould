@@ -1,12 +1,12 @@
 //!
-//! Contain 
+//! Contain
 //! =======
 //!
 //! The contain expectation should be used to determine whether a range contains
-//! a specific value or range of values. 
+//! a specific value or range of values.
 //!
 //! .. function:: Contain( ExpectedT )
-//!     
+//!
 //!     Creates a contain expectation
 //!
 //!     Meant to be used with :c:macro:`SHOULD` and :c:macro:`SHOULD_NOT` For example::
@@ -21,7 +21,7 @@
 //!         std::vector<int> intList = { 1, 2, 3 }
 //!         intList SHOULD Contain({ 1, 2 });   // Will pass
 //!         intList SHOULD Contain({ 1, 3 });   // Will fail
-//!         
+//!
 //!         std::string str = "Hello!";
 //!         str SHOULD Contain("Hello");        // Will pass
 //!         str SHOULD_NOT Contain("World");    // Will pass
@@ -73,20 +73,22 @@ impl::ContainExpectation< ExpectedT > Contain( ExpectedT expect )
 // Traits specialization for contains
 //
 template< class ActualT, class ExpectedT >
-struct ExpectationTraits< 
-    ActualT, 
+struct ExpectationTraits<
+    ActualT,
     expectations::impl::ContainExpectation< ExpectedT >
     >
 {
-    typedef EquivalenceTraits< typename ActualT::value_type, ExpectedT > EquivTraits;
+    typedef EquivalenceTraits<
+        typename ActualT::value_type, ExpectedT
+        > EquivTraits;
 
     static bool Matches(
-            ActualT actual, 
+            ActualT actual,
             expectations::impl::ContainExpectation< ExpectedT > expectation
             )
     {
         // TODO: Maybe this to a foreach at some point?
-        //       Or just a std::find_if 
+        //       Or just a std::find_if
         for ( auto it = std::begin(actual); it != std::end(actual); ++it )
         {
             if ( EquivTraits::Equivalent( *it, expectation.m_expect ) )
@@ -97,7 +99,7 @@ struct ExpectationTraits<
         return false;
     }
 };
-    
+
 }   // namespace cppshould
 
 #endif  // CPPSHOULD_EXPECTATIONS_CONTAIN_H_
