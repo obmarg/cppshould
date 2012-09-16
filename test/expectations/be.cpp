@@ -9,6 +9,10 @@ using ::testing::_;
 
 using cppshould::expectations::Be;
 using cppshould::expectations::BeApprox;
+using cppshould::expectations::BeGreaterThan;
+using cppshould::expectations::BeGreaterThanOrEqual;
+using cppshould::expectations::BeLessThan;
+using cppshould::expectations::BeLessThanOrEqual;
 using cppshould::testing::MockCallbacks;
 using cppshould::testing::SetupCallbacks;
 
@@ -212,4 +216,109 @@ TEST( BeApproxExpectation, ShouldOutputCorrectErrors )
     // Don't bother testing floating points since they
     // can give unpredictable output
     1 SHOULD BeApprox(3, 1);
+}
+
+TEST( ComparisonExpectations, ShouldWorkWithNumbers )
+{
+    MockCallbacks callbacks;
+    SetupCallbacks( callbacks );
+
+    // Set expectations
+    {
+        InSequence dummy;
+        EXPECT_CALL( callbacks, Pass() )
+            .Times(13);
+        EXPECT_CALL( callbacks, Fail(_, false) )
+            .Times(8);
+    }
+
+    //
+    // Passes
+    //
+    1 SHOULD BeGreaterThan(0);
+    2 SHOULD BeGreaterThan(1.5);
+    1.5 SHOULD BeGreaterThan(1);
+    1.0 SHOULD_NOT BeGreaterThan(2);
+
+    1 SHOULD BeGreaterThanOrEqual(1);
+    2 SHOULD BeGreaterThanOrEqual(1.0);
+    3.5 SHOULD_NOT BeGreaterThanOrEqual(4);
+
+    1 SHOULD BeLessThan(2);
+    2.5 SHOULD BeLessThan(3);
+    2.5 SHOULD_NOT BeLessThan(2);
+    1 SHOULD_NOT BeLessThan(0);
+
+    1 SHOULD BeLessThanOrEqual(1);
+    2 SHOULD BeLessThanOrEqual(100);
+
+    //
+    // Fails
+    //
+    1 SHOULD BeGreaterThan(2);
+    4 SHOULD_NOT BeGreaterThan(3);
+
+    1 SHOULD BeGreaterThanOrEqual(2);
+    1 SHOULD_NOT BeGreaterThanOrEqual(1);
+
+    1 SHOULD BeLessThan(0);
+    0 SHOULD_NOT BeLessThan(1);
+
+    1 SHOULD BeLessThanOrEqual(0);
+    2 SHOULD_NOT BeLessThanOrEqual(2);
+}
+
+TEST( ComparisonExpectations, ShouldOutputCorrectErrors )
+{
+    MockCallbacks callbacks;
+    SetupCallbacks( callbacks );
+
+    // Set expectations
+    {
+        InSequence dummy;
+        EXPECT_CALL( 
+                callbacks, 
+                Fail("1 should be greater than 2", false)
+                );
+        EXPECT_CALL( 
+                callbacks, 
+                Fail("2 should not be greater than 1", false)
+                );
+        EXPECT_CALL( 
+                callbacks, 
+                Fail("3 should be greater than or equal to 4", false)
+                );
+        EXPECT_CALL( 
+                callbacks, 
+                Fail("5 should not be greater than or equal to 4", false)
+                );
+        EXPECT_CALL( 
+                callbacks, 
+                Fail("2 should be less than 1", false)
+                );
+        EXPECT_CALL( 
+                callbacks, 
+                Fail("1 should not be less than 2", false)
+                );
+        EXPECT_CALL( 
+                callbacks, 
+                Fail("2 should be less than or equal to 1", false)
+                );
+        EXPECT_CALL( 
+                callbacks, 
+                Fail("1 should not be less than or equal to 2", false)
+                );
+    }
+
+    1 SHOULD BeGreaterThan(2);
+    2 SHOULD_NOT BeGreaterThan(1);
+
+    3 SHOULD BeGreaterThanOrEqual(4);
+    5 SHOULD_NOT BeGreaterThanOrEqual(4);
+
+    2 SHOULD BeLessThan(1);
+    1 SHOULD_NOT BeLessThan(2);
+
+    2 SHOULD BeLessThanOrEqual(1);
+    1 SHOULD_NOT BeLessThanOrEqual(2);
 }

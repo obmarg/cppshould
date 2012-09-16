@@ -5,6 +5,11 @@
 //! The be expectations should be used to determine whether a value meets
 //! a certain equality or comparison expectation.
 //!
+//! Equality Expectations
+//! ----------------------
+//!
+//! These expectations check that values are equal to expected values
+//!
 //! .. function:: Be( ExpectedT expected )
 //!
 //!     Creates a be expectation.  This expectation determines whether
@@ -52,6 +57,39 @@
 //!         intList SHOULD_NOT Be(1);  // Will fail
 //!
 //!     .. todo:: Link to information on SHOULD_BE & SHOULD_NOT_BE etc.
+//!
+//! Comparison Expectations
+//! -----------------------
+//!
+//! These expectations check that values compare correctly to expected values
+//!
+//! These expectations do not currently rely on traits to do
+//! their comparisons, instead relying on the plain comparison operators.
+//! This means that they are only suitable for use with types for which
+//! these operators are defined, such as integers and floats.  Types
+//! which define ``operator<`` & ``operator==`` will also work as the 
+//! other operators can be emulated with this operator.
+//!
+//! .. function:: BeGreaterThan( ExpectedT expected )
+//!
+//!     Creates an expectation that checks a value is greater than the 
+//!     expected value
+//!
+//! .. function:: BeGreaterThanOrEqual( ExpectedT expected )
+//!
+//!     Creates an expectation that checks a value is greater than or equal
+//!     to the expected value
+//!
+//! .. function:: BeLessThan( ExpectedT expected )
+//!
+//!     Creates an expectation that checks a value is less than the 
+//!     expected value
+//!
+//! .. function:: BeLessThanOrEqual( ExpectedT expected )
+//!
+//!     Creates an expectation that checks a value is less than or equal
+//!     to the expected value
+//!
 
 #ifndef CPPSHOULD_EXPECTATIONS_BE_H_
 #define CPPSHOULD_EXPECTATIONS_BE_H_
@@ -123,6 +161,63 @@ std::string BeApproxExpectation< ExpectedT >::ToString() const
     return oss.str();
 }
 
+//
+// Class that implements comparison expectations (BeGreaterThan etc.)
+//
+template< class ExpectedT >
+class ComparisonExpectation : public Expectation< ExpectedT >
+{
+public:
+    // TODO: In the future I think I could use a functor template
+    //       parameter to indicate the comparison type.
+    //       Like std::less_than etc. but with more flexibility
+    //       around arguments.
+    //       This'll do for now though
+    enum ComparisonType
+    {
+        GreaterThan,
+        GreaterThanEqual,
+        LessThan,
+        LessThanEqual
+    };
+
+public:
+    ComparisonExpectation( ExpectedT expected, ComparisonType type ) :
+    m_expected( expected ),
+    m_type( type )
+    {}
+
+    ExpectedT       m_expected;
+    ComparisonType  m_type;
+
+protected:
+    virtual std::string ToString() const;
+};
+
+template< class ExpectedT >
+std::string ComparisonExpectation< ExpectedT >::ToString() const
+{
+    std::ostringstream oss;
+    oss << "be ";
+    switch( m_type )
+    {
+    case GreaterThan:
+        oss << "greater than ";
+        break;
+    case GreaterThanEqual:
+        oss << "greater than or equal to ";
+        break;
+    case LessThan:
+        oss << "less than ";
+        break;
+    case LessThanEqual:
+        oss << "less than or equal to ";
+        break;
+    }
+    oss << ToStringTraits< ExpectedT >::Convert( m_expected );
+    return oss.str();
+}
+
 }   // namespace impl
 
 //
@@ -145,6 +240,53 @@ impl::BeApproxExpectation< ExpectedT > BeApprox(
     // TODO: would be nice to check if ExpectedT is valid for
     //       a be approx expectation here.
     return impl::BeApproxExpectation< ExpectedT >( expect, factor );
+}
+
+//
+// Factory functions for comparison expectations
+//
+template< class ExpectedT >
+impl::ComparisonExpectation< ExpectedT > BeGreaterThan(
+        ExpectedT expect
+        )
+{
+    return impl::ComparisonExpectation< ExpectedT >(
+            expect,
+            impl::ComparisonExpectation< ExpectedT >::GreaterThan
+            );
+}
+
+template< class ExpectedT >
+impl::ComparisonExpectation< ExpectedT > BeGreaterThanOrEqual(
+        ExpectedT expect
+        )
+{
+    return impl::ComparisonExpectation< ExpectedT >(
+            expect,
+            impl::ComparisonExpectation< ExpectedT >::GreaterThanEqual
+            );
+}
+
+template< class ExpectedT >
+impl::ComparisonExpectation< ExpectedT > BeLessThan(
+        ExpectedT expect
+        )
+{
+    return impl::ComparisonExpectation< ExpectedT >(
+            expect,
+            impl::ComparisonExpectation< ExpectedT >::LessThan
+            );
+}
+
+template< class ExpectedT >
+impl::ComparisonExpectation< ExpectedT > BeLessThanOrEqual(
+        ExpectedT expect
+        )
+{
+    return impl::ComparisonExpectation< ExpectedT >(
+            expect,
+            impl::ComparisonExpectation< ExpectedT >::LessThanEqual
+            );
 }
 
 }   // namespace expectations
@@ -192,11 +334,53 @@ struct ExpectationTraits<
         ExpectedT min = expectation.m_expect - expectation.m_factor;
         ExpectedT max = expectation.m_expect + expectation.m_factor;
         return actual >= min & actual <= max;
-        // NOTE:
+        // TODO:
         //
-        // Could probably switch this to use std::less_equal etc.
-        // which would leave room for specializations again
-        // This'll do for now though
+        // Could probably switch this to use something like
+        // std::less_equal etc.
+        // Would allow for specializations again
+        // This'll do for now though.
+    }
+};
+
+//
+// Traits specialization for Comparison expectation
+//
+template< class ActualT, class ExpectedT >
+struct ExpectationTraits<
+    ActualT,
+    expectations::impl::ComparisonExpectation< ExpectedT >
+    >
+{
+    typedef expectations::impl::ComparisonExpectation<
+        ExpectedT
+        > CompExpectation;
+
+    static bool Matches(
+            const ActualT& actual,
+            const CompExpectation& expectation
+            )
+    {
+        using namespace std::rel_ops;
+        using namespace expectations::impl;
+
+        switch( expectation.m_type )
+        {
+            case CompExpectation::GreaterThan:
+                return actual > expectation.m_expected;
+            case CompExpectation::GreaterThanEqual:
+                return actual >= expectation.m_expected;
+            case CompExpectation::LessThan:
+                return actual < expectation.m_expected;
+            case CompExpectation::LessThanEqual:
+                return actual <= expectation.m_expected;
+            default:
+                // This should never happen
+                throw std::logic_error(
+                        "Undefined comparison type in "
+                        "cppshould::expectations::ComparisonExpectation"
+                        );
+        }
     }
 };
 
