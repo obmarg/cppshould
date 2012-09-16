@@ -1,5 +1,6 @@
 //
-// This file defines the Contain expectation
+// This file defines the Should class that hooks up to
+// expectations and calls the result callbacks
 //
 
 #ifndef CPPSHOULD_SHOULD_H_
@@ -40,9 +41,7 @@ public:
             ):
     m_actual( actual ),
     m_shouldInfo( shouldInfo )
-    {
-        ActualT a = actual;
-    }
+    {}
 
     template< class ExpectationT >
     void operator<<( ExpectationT expectation );

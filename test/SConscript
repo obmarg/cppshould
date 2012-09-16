@@ -9,6 +9,7 @@ myenv.Append(CPPPATH='.')
 sources = """
     cppshouldtest.cpp
     should.cpp
+    shouldbe.cpp
     expectations/contains.cpp
     expectations/be.cpp
     """.split()

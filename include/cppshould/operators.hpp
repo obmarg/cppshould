@@ -5,8 +5,9 @@
 #ifndef CPPSHOULD_OPERATORS_H_
 #define CPPSHOULD_OPERATORS_H_
 
-#include "shouldinfo.hpp"
-#include "should.hpp"
+#include "cppshould/shouldinfo.hpp"
+#include "cppshould/should.hpp"
+#include "cppshould/shouldbe.hpp"
 
 namespace cppshould {
 
@@ -19,6 +20,17 @@ Should<ActualT> operator>> (
         ) 
 {
     return cppshould::Should<ActualT>(actual, shouldInfo);
+}
+
+//
+// Initial operator >> that creates the Should
+//
+template< class ActualT >
+ShouldBe<ActualT> operator>> (
+        ActualT actual, ShouldBeInfo shouldInfo
+        ) 
+{
+    return cppshould::ShouldBe<ActualT>(actual, shouldInfo);
 }
 
 }   // namespace cppshould

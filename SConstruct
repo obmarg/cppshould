@@ -33,6 +33,7 @@ if platform != 'win32':
     if int(debug):
         ccflags += [ '-g' ]
         cppflags += ccflags
+    cppflags.append('-Wno-unused-comparison')
 
 if platform == 'linux':
     cppdefines += [ "_LINUX", "LINUX" ]

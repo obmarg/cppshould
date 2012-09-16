@@ -1,5 +1,7 @@
 //
-// This file defines the Contain expectation
+// This file defines the structures that store info on
+// the SHOULD expectation before the actual Should class
+// is created.
 //
 
 #ifndef CPPSHOULD_SHOULDINFO_H_
@@ -32,6 +34,20 @@ struct ShouldInfo
     bool fatal;
 };
 
+//
+// Class for storing SHOULD_BE info.
+//
+struct ShouldBeInfo : public ShouldInfo
+{
+    ShouldBeInfo( 
+            std::string fileName, 
+            int lineNum, 
+            bool positive,
+            bool fatal
+            ) :
+    ShouldInfo( fileName, lineNum, positive, fatal )
+    {}
+};
 
 }   // namespace cppshould
 
