@@ -333,7 +333,7 @@ struct ExpectationTraits<
         using namespace std::rel_ops;
         ExpectedT min = expectation.m_expect - expectation.m_factor;
         ExpectedT max = expectation.m_expect + expectation.m_factor;
-        return actual >= min & actual <= max;
+        return actual >= min && actual <= max;
         // TODO:
         //
         // Could probably switch this to use something like
