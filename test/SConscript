@@ -10,6 +10,7 @@ sources = """
     cppshouldtest.cpp
     should.cpp
     expectations/contains.cpp
+    expectations/be.cpp
     """.split()
 
 output = myenv.Program(
