@@ -8,6 +8,7 @@
 #include "cppshould/expectations/base.hpp"
 #include "cppshould/traits.hpp"
 #include "cppshould/shouldinfo.hpp"
+#include "cppshould/utils.hpp"
 #include <stdexcept>
 #include <functional>
 #include <sstream>
@@ -65,7 +66,11 @@ template< class ActualT >
 template< class ExpectationT >
 void Should< ActualT >::operator<<( ExpectationT expectation )
 {
-    bool matches = ExpectationTraits< ActualT, ExpectationT >::Matches(
+    typedef ExpectationTraits<
+        typename remove_refcv< ActualT >::type, ExpectationT
+        > ExpecTraits;
+
+    bool matches = ExpecTraits::Matches(
             m_actual,
             expectation
             );

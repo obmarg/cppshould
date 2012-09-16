@@ -8,19 +8,19 @@
 #include "shouldinfo.hpp"
 #include "should.hpp"
 
-// TODO: Ideally i'd like to namespace these.
-//       However, i'm not sure if they'd actually work if I did.
-//       Figure that out at some point
+namespace cppshould {
 
 //
-// Initial operator << that creates the Should
+// Initial operator >> that creates the Should
 //
 template< class ActualT >
-cppshould::Should<ActualT> operator>> (
-        ActualT actual, cppshould::ShouldInfo shouldInfo
+Should<ActualT> operator>> (
+        ActualT actual, ShouldInfo shouldInfo
         ) 
 {
     return cppshould::Should<ActualT>(actual, shouldInfo);
 }
+
+}   // namespace cppshould
 
 #endif  // CPPSHOULD_OPERATORS_H_

@@ -9,7 +9,12 @@
 //!
 //!     Creates a contain expectation
 //!
-//!     Meant to be used with :c:macro:`SHOULD` and :c:macro:`SHOULD_NOT` For example::
+//!     .. todo:: Instead of linking directly to SHOULD & SHOULD_NOT maybe just
+//!               link to a macro section or something (so we don't miss out
+//!               MUST etc.)
+//!
+//!     Meant to be used with :c:macro:`SHOULD` and :c:macro:`SHOULD_NOT` 
+//!     For example::
 //!
 //!         intList SHOULD Contain(1);      // Will pass
 //!         intList SHOULD Contain(4);      // Will fail
@@ -23,19 +28,19 @@
 
 #include "cppshould/expectations/base.hpp"
 #include "cppshould/traits.hpp"
+#include "cppshould/utils.hpp"
 
 namespace cppshould {
 namespace expectations {
 namespace impl {
 
 //
-// Class that implements Contain() expectations
+// Class that implements Contain expectations
 //
 template< class ExpectedT >
 class ContainExpectation : public Expectation< ExpectedT >
 {
 public:
-    // TODO: (R-Value) reference this?
     ContainExpectation( ExpectedT expect ) :
     m_expect( expect )
     {}
@@ -81,12 +86,12 @@ struct ExpectationTraits<
     >
 {
     typedef EquivalenceTraits<
-        typename ActualT::value_type, ExpectedT
+        typename ActualT::value_type, typename remove_refcv< ExpectedT >::type
         > EquivTraits;
 
     static bool Matches(
-            ActualT actual,
-            expectations::impl::ContainExpectation< ExpectedT > expectation
+            const ActualT& actual,
+            const expectations::impl::ContainExpectation< ExpectedT >& expectation
             )
     {
         // TODO: Maybe this to a foreach at some point?
