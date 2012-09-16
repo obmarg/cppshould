@@ -101,6 +101,9 @@ public:
     m_factor( factor )
     {}
 
+    // TODO: Might be nice to have some sort of Factor( int )
+    //       function for setting the factor.
+
     ExpectedT m_expect;
     ExpectedT m_factor;
 
@@ -114,7 +117,7 @@ std::string BeApproxExpectation< ExpectedT >::ToString() const
     std::ostringstream oss;
     oss << "be approximately equal to "
         << ToStringTraits< ExpectedT >::Convert( m_expect )
-        << "(by a factor of "
+        << " (by a factor of "
         << ToStringTraits< ExpectedT >::Convert( m_factor )
         << ")";
     return oss.str();

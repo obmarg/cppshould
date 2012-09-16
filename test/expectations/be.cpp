@@ -90,7 +90,32 @@ TEST( BeExpectation, ShouldWorkWithVectors )
     vec1 SHOULD Be(vec2);
 }
 
-// TODO: add error message tests
+TEST( BeExpectation, ShouldOutputCorrectErrors )
+{
+    MockCallbacks callbacks;
+    SetupCallbacks( callbacks );
+
+    // Set expectations
+    {
+        InSequence dummy;
+        EXPECT_CALL( 
+                callbacks, 
+                Fail("Hello should be equal to World", false) 
+                );
+        EXPECT_CALL( 
+                callbacks, 
+                Fail("Hello should not be equal to Hello", false) 
+                );
+        EXPECT_CALL( 
+                callbacks, 
+                Fail("1 should be equal to 2", false) 
+                );
+    }
+
+    "Hello" SHOULD Be("World");
+    "Hello" SHOULD_NOT Be("Hello");
+    1 SHOULD Be(2);
+}
 
 // TODO: Add a test with a custom object ?
 //
@@ -168,4 +193,23 @@ TEST( BeApproxExpectation, ShouldDoInterTypeComparisons )
     3.1 SHOULD BeApprox(2, 1);
 }
 
-// TODO: Add error message tests
+TEST( BeApproxExpectation, ShouldOutputCorrectErrors )
+{
+    MockCallbacks callbacks;
+    SetupCallbacks( callbacks );
+
+    // Set expectations
+    {
+        InSequence dummy;
+        EXPECT_CALL( 
+                callbacks, 
+                Fail(
+                    "1 should be approximately equal to 3 "
+                    "(by a factor of 1)", false
+                    ) );
+    }
+
+    // Don't bother testing floating points since they
+    // can give unpredictable output
+    1 SHOULD BeApprox(3, 1);
+}
