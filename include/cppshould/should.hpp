@@ -1,5 +1,6 @@
 //
-// This file defines the Contain expectation
+// This file defines the Should class that hooks up to
+// expectations and calls the result callbacks
 //
 
 #ifndef CPPSHOULD_SHOULD_H_
@@ -8,6 +9,7 @@
 #include "cppshould/expectations/base.hpp"
 #include "cppshould/traits.hpp"
 #include "cppshould/shouldinfo.hpp"
+#include "cppshould/utils.hpp"
 #include <stdexcept>
 #include <functional>
 #include <sstream>
@@ -39,9 +41,7 @@ public:
             ):
     m_actual( actual ),
     m_shouldInfo( shouldInfo )
-    {
-        ActualT a = actual;
-    }
+    {}
 
     template< class ExpectationT >
     void operator<<( ExpectationT expectation );
@@ -65,7 +65,11 @@ template< class ActualT >
 template< class ExpectationT >
 void Should< ActualT >::operator<<( ExpectationT expectation )
 {
-    bool matches = ExpectationTraits< ActualT, ExpectationT >::Matches(
+    typedef ExpectationTraits<
+        typename remove_refcv< ActualT >::type, ExpectationT
+        > ExpecTraits;
+
+    bool matches = ExpecTraits::Matches(
             m_actual,
             expectation
             );

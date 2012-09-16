@@ -33,6 +33,8 @@ namespace cppshould {
 //!     globally or provide class member operators.
 //!
 //!     .. todo:: Provide some examples of overriding this function?
+//!               Be sure to mention somewhere that references & cv
+//!               should be stripped before calling it?
 //!
 //!     .. function:: static bool Equivalent( const LeftT& lhs, const RightT& rhs )
 //!
@@ -60,8 +62,10 @@ struct EquivalenceTraits
 //!     they are creating their own custom expectation types.
 //!
 //!     .. todo:: Provide some details and examples of specializing this class
+//!               Be sure to mention somewhere that references & cv
+//!               should be stripped before calling it?
 //!
-//!     .. function:: static bool Check( ActualT actual, ExpectationT expectation )
+//!     .. function:: static bool Check( const ActualT& actual, const ExpectationT& expectation )
 //!
 //!         This function is used to actually check expectations.  It should
 //!         return true if ``actual`` meets ``expectation``
@@ -77,7 +81,7 @@ struct ExpectationTraits
             "This Expectation does not support checking against this data type"
             );
 
-    static bool Check( ActualT actual, ExpectationT expectation );
+    static bool Check( const ActualT& actual, const ExpectationT& expectation );
 };
 
 //!
@@ -116,6 +120,8 @@ struct ToStringTraits
 }   // namespace cppshould
 
 // Include some specializations of ToStringTraits
-#include "cppshould/tostring.h"
+#include "cppshould/tostring.hpp"
+// Include some specializations of EquivalenceTraits
+#include "cppshould/equivtraits.hpp"
 
 #endif  // CPPSHOULD_TRAITS_H_
