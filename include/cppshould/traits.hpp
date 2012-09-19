@@ -120,8 +120,8 @@ struct ToStringTraits
 }   // namespace cppshould
 
 // Include some specializations of ToStringTraits
-#include "cppshould/tostring.hpp"
+#include "cppshould/impl/tostring.hpp"
 // Include some specializations of EquivalenceTraits
-#include "cppshould/equivtraits.hpp"
+#include "cppshould/impl/equivtraits.hpp"
 
 #endif  // CPPSHOULD_TRAITS_H_
