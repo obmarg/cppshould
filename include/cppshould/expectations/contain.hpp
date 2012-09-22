@@ -29,6 +29,7 @@
 #include "cppshould/expectations/base.hpp"
 #include "cppshould/traits.hpp"
 #include "cppshould/utils.hpp"
+#include <type_traits>
 
 namespace cppshould {
 namespace expectations {
@@ -77,12 +78,13 @@ impl::ContainExpectation< ExpectedT > Contain( ExpectedT expect )
 }   // namespace expectations
 
 //
-// Traits specialization for contains
+// Traits specialization of contains for non-ranges
 //
 template< class ActualT, class ExpectedT >
 struct ExpectationTraits<
     ActualT,
-    expectations::impl::ContainExpectation< ExpectedT >
+    expectations::impl::ContainExpectation< ExpectedT >,
+    typename std::enable_if< !RangeTraits< ExpectedT >::IsRange >::type
     >
 {
     typedef EquivalenceTraits<
@@ -104,6 +106,30 @@ struct ExpectationTraits<
             }
         }
         return false;
+    }
+};
+
+//
+// Traits specialization of contains for ranges
+//
+template< class ActualT, class ExpectedT >
+struct ExpectationTraits<
+    ActualT,
+    expectations::impl::ContainExpectation< ExpectedT >,
+    typename std::enable_if< RangeTraits< ExpectedT >::IsRange >::type
+    >
+{
+    typedef EquivalenceTraits<
+        typename ActualT::value_type, typename RangeTraits< ExpectedT >::ValueT
+        > EquivTraits;
+
+    static bool Matches(
+            const ActualT& actual,
+            const expectations::impl::ContainExpectation< ExpectedT >& expectation
+            )
+    {
+        // TODO: Finish implementing this
+        return true;
     }
 };
 

@@ -93,3 +93,23 @@ TEST_F( ContainExpectation, ShouldPrintCorrectErrors )
     str SHOULD Contain('W');
     str SHOULD_NOT Contain('H');
 }
+
+TEST_F( ContainExpectation, ShouldAcceptVectors )
+{
+    // Set things up
+    MockCallbacks callbacks;
+    SetupCallbacks( callbacks );
+
+    // Set expectations
+    {
+        InSequence dummy;
+        EXPECT_CALL( callbacks, Pass() )
+            .Times(1);
+    }
+
+    std::vector< int > otherList;
+    otherList.push_back( 1 );
+    otherList.push_back( 2 );
+
+    intList SHOULD Contain(otherList);
+}
