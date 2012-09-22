@@ -128,8 +128,13 @@ struct ExpectationTraits<
             const expectations::impl::ContainExpectation< ExpectedT >& expectation
             )
     {
-        // TODO: Finish implementing this
-        return true;
+        auto result = std::find_end(
+                std::begin( actual ), std::end( actual ),
+                std::begin( expectation.m_expect ), 
+                std::end( expectation.m_expect ),
+                EquivalencePred()
+                );
+        return result != std::end( actual );
     }
 };
 

@@ -104,12 +104,21 @@ TEST_F( ContainExpectation, ShouldAcceptVectors )
     {
         InSequence dummy;
         EXPECT_CALL( callbacks, Pass() )
-            .Times(1);
+            .Times(2);
+        // TODO: Check error messages?
+        EXPECT_CALL( callbacks, Fail( _, false ) );
     }
 
     std::vector< int > otherList;
     otherList.push_back( 1 );
     otherList.push_back( 2 );
 
+    // Passes
     intList SHOULD Contain(otherList);
+
+    otherList.push_back( 4000 );
+    intList SHOULD_NOT Contain( otherList );
+
+    // Fails
+    intList SHOULD Contain( otherList );
 }
