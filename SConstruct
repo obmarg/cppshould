@@ -33,7 +33,6 @@ if platform != 'win32':
     if int(debug):
         ccflags += [ '-g' ]
         cppflags += ccflags
-    cppflags.append('-Wno-unused-comparison')
 
 if platform == 'linux':
     cppdefines += [ "_LINUX", "LINUX" ]
@@ -61,7 +60,7 @@ if platform != 'win32':
 
 if cc == 'clang':
     # Turn on colors for clang builds
-    cppflags.append('-fcolor-diagnostics')
+    cppflags += ['-fcolor-diagnostics', '-Wno-unused-comparison']
     lflags.append('-fcolor-diagnostics')
 
 if platform == 'win32':

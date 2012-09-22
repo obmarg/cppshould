@@ -30,6 +30,7 @@
 #include "cppshould/expectations/base.hpp"
 #include "cppshould/traits.hpp"
 #include <type_traits>
+#include <algorithm>
 
 namespace cppshould {
 namespace expectations {
