@@ -117,11 +117,36 @@ struct ToStringTraits
     }
 };
 
+//!
+//! .. class::  RangeTraits
+//!
+//!     RangeTraits is a template struct that is used to determine whether
+//!     or not a type is a range.  It is used by any of the expectations 
+//!     that accept ranges as well as individual values, in order to check
+//!     if the current parameter is a range or not.
+//!
+//!     If you wish to use a range in a matcher that is not already considered
+//!     a range by cppshould, simply provide a specialization of this
+//!     struct for this type, and set IsRange to true.
+//!
+//!     .. todo:: Provide examples
+//!
+//!
+template< class TypeT, class Enable=void >
+struct RangeTraits
+{
+    static const bool IsRange = false;
+};
+
 }   // namespace cppshould
 
 // Include some specializations of ToStringTraits
-#include "cppshould/tostring.hpp"
+#include "cppshould/impl/tostring.hpp"
 // Include some specializations of EquivalenceTraits
-#include "cppshould/equivtraits.hpp"
+#include "cppshould/impl/equivtraits.hpp"
+// Include some specializations of RangeTraits
+// TODO: Probably want to shift this out into .hpp files for expectations
+//       that actually require range traits, rather than here.
+#include "cppshould/impl/rangetraits.hpp"
 
 #endif  // CPPSHOULD_TRAITS_H_

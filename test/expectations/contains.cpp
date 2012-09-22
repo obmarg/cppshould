@@ -93,3 +93,58 @@ TEST_F( ContainExpectation, ShouldPrintCorrectErrors )
     str SHOULD Contain('W');
     str SHOULD_NOT Contain('H');
 }
+
+TEST_F( ContainExpectation, ShouldAcceptVectors )
+{
+    // Set things up
+    MockCallbacks callbacks;
+    SetupCallbacks( callbacks );
+
+    // Set expectations
+    {
+        InSequence dummy;
+        EXPECT_CALL( callbacks, Pass() )
+            .Times(2);
+        // TODO: Check error messages?
+        EXPECT_CALL( callbacks, Fail( _, false ) );
+    }
+
+    std::vector< int > otherList;
+    otherList.push_back( 1 );
+    otherList.push_back( 2 );
+
+    // Passes
+    intList SHOULD Contain(otherList);
+
+    otherList.push_back( 4000 );
+    intList SHOULD_NOT Contain( otherList );
+
+    // Fails
+    intList SHOULD Contain( otherList );
+}
+
+TEST_F( ContainExpectation, ShouldAcceptStrings ) 
+{
+    // Set things up
+    MockCallbacks callbacks;
+    SetupCallbacks( callbacks );
+
+    // Set expectations
+    {
+        InSequence dummy;
+        EXPECT_CALL( callbacks, Pass() )
+            .Times(3);
+        EXPECT_CALL( callbacks, Fail(_, false) )
+            .Times(1);
+    }
+
+    std::string str = "Hello There!";
+
+    // Passes
+    str SHOULD Contain( std::string( "Hello" ) );
+    str SHOULD_NOT Contain( std::string( "Boobs" ) );
+    str SHOULD Contain( "Hello" );
+
+    // Fails
+    str SHOULD_NOT Contain( std::string( "There!" ) );
+}

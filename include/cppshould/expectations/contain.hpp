@@ -13,7 +13,7 @@
 //!               link to a macro section or something (so we don't miss out
 //!               MUST etc.)
 //!
-//!     Meant to be used with :c:macro:`SHOULD` and :c:macro:`SHOULD_NOT` 
+//!     Meant to be used with :c:macro:`SHOULD` and :c:macro:`SHOULD_NOT`
 //!     For example::
 //!
 //!         intList SHOULD Contain(1);      // Will pass
@@ -26,9 +26,10 @@
 #ifndef CPPSHOULD_EXPECTATIONS_CONTAIN_H_
 #define CPPSHOULD_EXPECTATIONS_CONTAIN_H_
 
+#include "cppshould/impl/utils.hpp"
 #include "cppshould/expectations/base.hpp"
 #include "cppshould/traits.hpp"
-#include "cppshould/utils.hpp"
+#include <type_traits>
 
 namespace cppshould {
 namespace expectations {
@@ -68,23 +69,34 @@ std::string ContainExpectation< ExpectedT >::ToString() const
 template< class ExpectedT >
 impl::ContainExpectation< ExpectedT > Contain( ExpectedT expect )
 {
-    // TODO: Maybe want to check if ExpectedT makes sense?
-    //       Though in this case I think it always would - most things
-    //       could be in a range, more depends on the type of range
     return impl::ContainExpectation< ExpectedT >( expect );
+}
+
+//
+// Factory function for char* Contain expectation
+//
+static impl::ContainExpectation< std::string > Contain( const char* expect )
+{
+    return impl::ContainExpectation< std::string >( expect );
 }
 
 }   // namespace expectations
 
 //
-// Traits specialization for contains
+// Traits specialization for contains with non-ranges
 //
 template< class ActualT, class ExpectedT >
 struct ExpectationTraits<
     ActualT,
-    expectations::impl::ContainExpectation< ExpectedT >
+    expectations::impl::ContainExpectation< ExpectedT >,
+    typename std::enable_if< !RangeTraits< ExpectedT >::IsRange >::type
     >
 {
+    static_assert(
+            RangeTraits< ActualT >::IsRange,
+            "The Contain expectation must be used against a range"
+            );
+
     typedef EquivalenceTraits<
         typename ActualT::value_type, typename remove_refcv< ExpectedT >::type
         > EquivTraits;
@@ -104,6 +116,41 @@ struct ExpectationTraits<
             }
         }
         return false;
+    }
+};
+
+//
+// Traits specialization for Contains(range)
+//
+template< class ActualT, class ExpectedT >
+struct ExpectationTraits<
+    ActualT,
+    expectations::impl::ContainExpectation< ExpectedT >,
+    typename std::enable_if< RangeTraits< ExpectedT >::IsRange >::type
+    >
+{
+    static_assert(
+            RangeTraits< ActualT >::IsRange,
+            "The Contain expectation must be used against a range"
+            );
+
+    typedef EquivalenceTraits<
+        typename RangeTraits< ActualT >::ValueT,
+        typename RangeTraits< ExpectedT >::ValueT
+        > EquivTraits;
+
+    static bool Matches(
+            const ActualT& actual,
+            const expectations::impl::ContainExpectation< ExpectedT >& expectation
+            )
+    {
+        auto result = std::find_end(
+                std::begin( actual ), std::end( actual ),
+                std::begin( expectation.m_expect ),
+                std::end( expectation.m_expect ),
+                EquivalencePred()
+                );
+        return result != std::end( actual );
     }
 };
 
