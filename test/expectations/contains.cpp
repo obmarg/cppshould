@@ -122,3 +122,29 @@ TEST_F( ContainExpectation, ShouldAcceptVectors )
     // Fails
     intList SHOULD Contain( otherList );
 }
+
+TEST_F( ContainExpectation, ShouldAcceptStrings ) 
+{
+    // Set things up
+    MockCallbacks callbacks;
+    SetupCallbacks( callbacks );
+
+    // Set expectations
+    {
+        InSequence dummy;
+        EXPECT_CALL( callbacks, Pass() )
+            .Times(3);
+        EXPECT_CALL( callbacks, Fail(_, false) )
+            .Times(1);
+    }
+
+    std::string str = "Hello There!";
+
+    // Passes
+    str SHOULD Contain( std::string( "Hello" ) );
+    str SHOULD_NOT Contain( std::string( "Boobs" ) );
+    str SHOULD Contain( "Hello" );
+
+    // Fails
+    str SHOULD_NOT Contain( std::string( "There!" ) );
+}
