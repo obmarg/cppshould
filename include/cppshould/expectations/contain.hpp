@@ -26,9 +26,9 @@
 #ifndef CPPSHOULD_EXPECTATIONS_CONTAIN_H_
 #define CPPSHOULD_EXPECTATIONS_CONTAIN_H_
 
+#include "cppshould/impl/utils.hpp"
 #include "cppshould/expectations/base.hpp"
 #include "cppshould/traits.hpp"
-#include "cppshould/utils.hpp"
 #include <type_traits>
 
 namespace cppshould {

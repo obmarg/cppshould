@@ -96,7 +96,7 @@
 
 #include "cppshould/expectations/base.hpp"
 #include "cppshould/traits.hpp"
-#include "cppshould/utils.hpp"
+#include "cppshould/impl/utils.hpp"
 #include <sstream>
 #include <utility>
 

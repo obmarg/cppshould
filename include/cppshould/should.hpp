@@ -6,10 +6,10 @@
 #ifndef CPPSHOULD_SHOULD_H_
 #define CPPSHOULD_SHOULD_H_
 
+#include "cppshould/impl/utils.hpp"
 #include "cppshould/expectations/base.hpp"
 #include "cppshould/traits.hpp"
 #include "cppshould/shouldinfo.hpp"
-#include "cppshould/utils.hpp"
 #include <stdexcept>
 #include <functional>
 #include <sstream>
